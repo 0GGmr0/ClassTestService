@@ -25,12 +25,6 @@
     </properties>
 
     <dependencies>
-
-        <!--spring boot 热部署依赖-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-        </dependency>
         <!--mysql-->
         <dependency>
             <groupId>mysql</groupId>
@@ -54,6 +48,14 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!--spring boot 热部署依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
     <build>

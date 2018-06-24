@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @create: 2018-06-21 14:28
  */
 @RestController
-@CrossOrigin
 public class Test {
-    @RequestMapping("test")
-    public String sssest() {
-        return "dsdsd";
+    @RequestMapping("tasdt")
+    public String sasst() {
+        return "s";
     }
 }
