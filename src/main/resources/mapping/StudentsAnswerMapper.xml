@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gmr.test.dao.StudentsAnswerMapper" >
+  <resultMap id="BaseResultMap" type="com.gmr.test.model.entity.StudentsAnswer" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="paper_id" property="paperId" jdbcType="INTEGER" />
+    <result column="students_answer" property="studentsAnswer" jdbcType="VARCHAR" />
+    <result column="problem_id" property="problemId" jdbcType="INTEGER" />
+    <result column="problem_type" property="problemType" jdbcType="INTEGER" />
+    <result column="is_right" property="isRight" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, paper_id, students_answer, problem_id, problem_type, is_right
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.gmr.test.model.entity.StudentsAnswerExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from tbl_StudentsAnswer
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_StudentsAnswer
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tbl_StudentsAnswer
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.gmr.test.model.entity.StudentsAnswerExample" >
+    delete from tbl_StudentsAnswer
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.gmr.test.model.entity.StudentsAnswer" >
+    insert into tbl_StudentsAnswer (id, paper_id, students_answer, 
+      problem_id, problem_type, is_right
+      )
+    values (#{id,jdbcType=INTEGER}, #{paperId,jdbcType=INTEGER}, #{studentsAnswer,jdbcType=VARCHAR}, 
+      #{problemId,jdbcType=INTEGER}, #{problemType,jdbcType=INTEGER}, #{isRight,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.gmr.test.model.entity.StudentsAnswer" >
+    insert into tbl_StudentsAnswer
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="paperId != null" >
+        paper_id,
+      </if>
+      <if test="studentsAnswer != null" >
+        students_answer,
+      </if>
+      <if test="problemId != null" >
+        problem_id,
+      </if>
+      <if test="problemType != null" >
+        problem_type,
+      </if>
+      <if test="isRight != null" >
+        is_right,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="paperId != null" >
+        #{paperId,jdbcType=INTEGER},
+      </if>
+      <if test="studentsAnswer != null" >
+        #{studentsAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="problemId != null" >
+        #{problemId,jdbcType=INTEGER},
+      </if>
+      <if test="problemType != null" >
+        #{problemType,jdbcType=INTEGER},
+      </if>
+      <if test="isRight != null" >
+        #{isRight,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.gmr.test.model.entity.StudentsAnswerExample" resultType="java.lang.Integer" >
+    select count(*) from tbl_StudentsAnswer
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update tbl_StudentsAnswer
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.paperId != null" >
+        paper_id = #{record.paperId,jdbcType=INTEGER},
+      </if>
+      <if test="record.studentsAnswer != null" >
+        students_answer = #{record.studentsAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.problemId != null" >
+        problem_id = #{record.problemId,jdbcType=INTEGER},
+      </if>
+      <if test="record.problemType != null" >
+        problem_type = #{record.problemType,jdbcType=INTEGER},
+      </if>
+      <if test="record.isRight != null" >
+        is_right = #{record.isRight,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update tbl_StudentsAnswer
+    set id = #{record.id,jdbcType=INTEGER},
+      paper_id = #{record.paperId,jdbcType=INTEGER},
+      students_answer = #{record.studentsAnswer,jdbcType=VARCHAR},
+      problem_id = #{record.problemId,jdbcType=INTEGER},
+      problem_type = #{record.problemType,jdbcType=INTEGER},
+      is_right = #{record.isRight,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gmr.test.model.entity.StudentsAnswer" >
+    update tbl_StudentsAnswer
+    <set >
+      <if test="paperId != null" >
+        paper_id = #{paperId,jdbcType=INTEGER},
+      </if>
+      <if test="studentsAnswer != null" >
+        students_answer = #{studentsAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="problemId != null" >
+        problem_id = #{problemId,jdbcType=INTEGER},
+      </if>
+      <if test="problemType != null" >
+        problem_type = #{problemType,jdbcType=INTEGER},
+      </if>
+      <if test="isRight != null" >
+        is_right = #{isRight,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gmr.test.model.entity.StudentsAnswer" >
+    update tbl_StudentsAnswer
+    set paper_id = #{paperId,jdbcType=INTEGER},
+      students_answer = #{studentsAnswer,jdbcType=VARCHAR},
+      problem_id = #{problemId,jdbcType=INTEGER},
+      problem_type = #{problemType,jdbcType=INTEGER},
+      is_right = #{isRight,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username:
+    password:
+    url:
+
+
+server:
+  servlet:
+    context-path: /api
+  port: 8081
+
+mybatis:
+  mapper-locations: classpath:mapping/*.xml
+  type-aliases-package: com.gmr.vote.model.entity

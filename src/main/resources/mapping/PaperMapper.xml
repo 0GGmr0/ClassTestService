@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gmr.test.dao.PaperMapper" >
+  <resultMap id="BaseResultMap" type="com.gmr.test.model.entity.Paper" >
+    <id column="paper_id" property="paperId" jdbcType="INTEGER" />
+    <result column="teacher_id" property="teacherId" jdbcType="VARCHAR" />
+    <result column="paper_name" property="paperName" jdbcType="VARCHAR" />
+    <result column="proble_num" property="probleNum" jdbcType="INTEGER" />
+    <result column="paper_score" property="paperScore" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    paper_id, teacher_id, paper_name, proble_num, paper_score
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.gmr.test.model.entity.PaperExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from tbl_Paper
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_Paper
+    where paper_id = #{paperId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tbl_Paper
+    where paper_id = #{paperId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.gmr.test.model.entity.PaperExample" >
+    delete from tbl_Paper
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.gmr.test.model.entity.Paper" >
+    insert into tbl_Paper (paper_id, teacher_id, paper_name, 
+      proble_num, paper_score)
+    values (#{paperId,jdbcType=INTEGER}, #{teacherId,jdbcType=VARCHAR}, #{paperName,jdbcType=VARCHAR}, 
+      #{probleNum,jdbcType=INTEGER}, #{paperScore,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gmr.test.model.entity.Paper" >
+    insert into tbl_Paper
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="paperId != null" >
+        paper_id,
+      </if>
+      <if test="teacherId != null" >
+        teacher_id,
+      </if>
+      <if test="paperName != null" >
+        paper_name,
+      </if>
+      <if test="probleNum != null" >
+        proble_num,
+      </if>
+      <if test="paperScore != null" >
+        paper_score,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="paperId != null" >
+        #{paperId,jdbcType=INTEGER},
+      </if>
+      <if test="teacherId != null" >
+        #{teacherId,jdbcType=VARCHAR},
+      </if>
+      <if test="paperName != null" >
+        #{paperName,jdbcType=VARCHAR},
+      </if>
+      <if test="probleNum != null" >
+        #{probleNum,jdbcType=INTEGER},
+      </if>
+      <if test="paperScore != null" >
+        #{paperScore,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.gmr.test.model.entity.PaperExample" resultType="java.lang.Integer" >
+    select count(*) from tbl_Paper
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update tbl_Paper
+    <set >
+      <if test="record.paperId != null" >
+        paper_id = #{record.paperId,jdbcType=INTEGER},
+      </if>
+      <if test="record.teacherId != null" >
+        teacher_id = #{record.teacherId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paperName != null" >
+        paper_name = #{record.paperName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.probleNum != null" >
+        proble_num = #{record.probleNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.paperScore != null" >
+        paper_score = #{record.paperScore,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update tbl_Paper
+    set paper_id = #{record.paperId,jdbcType=INTEGER},
+      teacher_id = #{record.teacherId,jdbcType=VARCHAR},
+      paper_name = #{record.paperName,jdbcType=VARCHAR},
+      proble_num = #{record.probleNum,jdbcType=INTEGER},
+      paper_score = #{record.paperScore,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gmr.test.model.entity.Paper" >
+    update tbl_Paper
+    <set >
+      <if test="teacherId != null" >
+        teacher_id = #{teacherId,jdbcType=VARCHAR},
+      </if>
+      <if test="paperName != null" >
+        paper_name = #{paperName,jdbcType=VARCHAR},
+      </if>
+      <if test="probleNum != null" >
+        proble_num = #{probleNum,jdbcType=INTEGER},
+      </if>
+      <if test="paperScore != null" >
+        paper_score = #{paperScore,jdbcType=INTEGER},
+      </if>
+    </set>
+    where paper_id = #{paperId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gmr.test.model.entity.Paper" >
+    update tbl_Paper
+    set teacher_id = #{teacherId,jdbcType=VARCHAR},
+      paper_name = #{paperName,jdbcType=VARCHAR},
+      proble_num = #{probleNum,jdbcType=INTEGER},
+      paper_score = #{paperScore,jdbcType=INTEGER}
+    where paper_id = #{paperId,jdbcType=INTEGER}
+  </update>
+</mapper>
