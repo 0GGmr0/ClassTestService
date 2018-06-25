@@ -1,19 +1,22 @@
 package com.gmr.test.service;
 
 import com.gmr.test.dao.ClassMapper;
+import com.gmr.test.dao.PaperForClassMapper;
 import com.gmr.test.dao.PaperMapper;
 import com.gmr.test.dao.PaperProblemsMapper;
 import com.gmr.test.model.OV.Result;
-import com.gmr.test.model.entity.Paper;
-import com.gmr.test.model.entity.PaperExample;
-import com.gmr.test.model.entity.PaperProblems;
+import com.gmr.test.model.entity.*;
 import com.gmr.test.model.jsonrequestbody.CreatePaperJsonRequest;
+import com.gmr.test.model.jsonrequestbody.PullPaperJsonRequest;
 import com.gmr.test.model.jsonrequestbody.createpaperAssembly.ItemJsonRequest;
 import com.gmr.test.model.jsonrequestbody.createpaperAssembly.ProblemsJsonRequest;
 import com.gmr.test.tools.ResultTool;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +35,52 @@ public class PaperService {
     private PaperProblemsMapper paperProblemsMapper;
 
     @Resource
+    private PaperForClassMapper paperForClassMapper;
+
+    @Resource
     private ClassMapper classMapper;
+
+    /**
+     * @Description: 通过试卷名查找试卷
+     * @Param: [paperName]
+     * @Return: com.gmr.test.model.entity.Paper
+     * @Author: ggmr
+     * @Date: 18-6-25
+     */
+    private Paper findPaperByName(String teacherId, String paperName) {
+        PaperExample paperExample = new PaperExample();
+        paperExample.createCriteria()
+                .andTeacherIdEqualTo(teacherId)
+                .andPaperNameEqualTo(paperName);
+        List<Paper> paperList = paperMapper.selectByExample(paperExample);
+        if(paperList.isEmpty()) {
+            return null;
+        } else {
+            return paperList.get(0);
+        }
+    }
+
+    /**
+     * @Description: 根据班级名查找班级
+     * @Param: [className]
+     * @Return: com.gmr.test.model.entity.Class
+     * @Author: ggmr
+     * @Date: 18-6-25
+     */
+    private com.gmr.test.model.entity.Class findClassByName(String className) {
+        ClassExample classExample = new ClassExample();
+        classExample.createCriteria()
+                .andClassNameEqualTo(className);
+        List<com.gmr.test.model.entity.Class> classList = classMapper.selectByExample(classExample);
+        if(classList.isEmpty()) {
+            return null;
+        } else {
+            return classList.get(0);
+        }
+    }
+
+
+
     /**
      * @Description: 教师出试卷
      * @Param: [teacherId, createPaperJsonRequest]
@@ -139,4 +187,44 @@ public class PaperService {
             return ResultTool.error("不好意思，您的试卷名和您出的其他试卷的名字重复");
         }
     }
+
+    private Date stringToDate(String strDate) throws ParseException {
+        DateFormat fmt =new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        return fmt.parse(strDate);
+    }
+
+
+
+    /**
+     * @Description: 教师发布试卷
+     * @Param: [pullPaperJsonRequest]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-25
+     */
+    public Result pullPaper(String teacherId,
+                            PullPaperJsonRequest pullPaperJsonRequest) throws ParseException {
+        String className = pullPaperJsonRequest.getClassName();
+        String paperName = pullPaperJsonRequest.getPaperName();
+        Date deadline = stringToDate(pullPaperJsonRequest.getDeadline());
+        String limitTime = pullPaperJsonRequest.getLimitTime();
+        PaperForClass paperForClass = new PaperForClass();
+        Paper paper = findPaperByName(teacherId, paperName);
+        if(paper == null) {
+            return ResultTool.error("您没有这张试卷");
+        }
+        paperForClass.setPapperId(paper.getPaperId());
+        paperForClass.setDeadline(deadline);
+
+        com.gmr.test.model.entity.Class existClass = findClassByName(className);
+        if(existClass == null) {
+            return ResultTool.error("您没有这个名字的班级");
+        }
+        paperForClass.setClassId(existClass.getClassId());
+        paperForClass.setLimitTime(limitTime);
+        paperForClass.setTeacherId(teacherId);
+        paperForClassMapper.insert(paperForClass);
+        return ResultTool.success();
+    }
+
 }

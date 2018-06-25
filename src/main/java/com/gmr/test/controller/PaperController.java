@@ -3,6 +3,7 @@ package com.gmr.test.controller;
 import com.gmr.test.model.OV.Result;
 import com.gmr.test.model.jsonrequestbody.CreateClassJsonRequest;
 import com.gmr.test.model.jsonrequestbody.CreatePaperJsonRequest;
+import com.gmr.test.model.jsonrequestbody.PullPaperJsonRequest;
 import com.gmr.test.service.PaperService;
 import com.gmr.test.tools.JwtUtil;
 import com.gmr.test.tools.ResultTool;
@@ -10,6 +11,7 @@ import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
 
 /**
  * @program: test
@@ -41,4 +43,17 @@ public class PaperController {
         String teacherId = JwtUtil.parseJwt(token);
         return paperService.addPaper(teacherId, createPaperJsonRequest);
     }
+
+
+    @RequestMapping(value = "teacher/postPaper", method = RequestMethod.POST)
+    public Result pullPaper(HttpServletRequest httpServletRequest,
+                            @RequestBody PullPaperJsonRequest pullPaperJsonRequest) throws ParseException {
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null) {
+            return ResultTool.error("请登录");
+        }
+        String teacherId = JwtUtil.parseJwt(token);
+        return paperService.pullPaper(teacherId, pullPaperJsonRequest);
+    }
+
 }

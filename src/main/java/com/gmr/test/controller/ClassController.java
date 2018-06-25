@@ -59,6 +59,13 @@ public class ClassController {
         return classService.classStudentsInformation(className);
     }
 
+    /**
+     * @Description: 返回教师自己创建的班级列表
+     * @Param: [httpServletRequest]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-25
+     */
     @RequestMapping(value = "teacher/allClass",method = RequestMethod.GET)
     public Result teacherClassList(HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader("Authorization");
