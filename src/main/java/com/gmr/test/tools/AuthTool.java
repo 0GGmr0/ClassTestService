@@ -94,9 +94,16 @@ public class AuthTool {
             // 读取响应数据
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            StringBuilder responseStr = new StringBuilder();
             String tempStr;
+            while ((tempStr = in.readLine()) != null) {
+                responseStr.append(tempStr);
+            }
+            int site1 = responseStr.indexOf("<GetStudentInfoResult><string>");
+            String sub1 = responseStr.substring(site1 + 30);
+            int site11 = sub1.indexOf("</string>");
             User user = new User();
-
+            user.setUserName(sub1.substring(0, site11));
             user.setUserId(userId);
             return user;
         } catch (Exception e) {

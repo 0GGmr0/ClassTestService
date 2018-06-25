@@ -21,6 +21,13 @@ public class LoginController {
     @Resource
     private UserService userService;
 
+    /**
+     * @Description: 登录接口
+     * @Param: [loginUser]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-25
+     */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Result login(@RequestBody LoginUser loginUser) {
         return userService.login(loginUser);

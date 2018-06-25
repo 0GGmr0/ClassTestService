@@ -9,7 +9,6 @@ import com.gmr.test.model.entity.Class;
 import com.gmr.test.model.entity.ClassExample;
 import com.gmr.test.model.entity.ClassStudents;
 import com.gmr.test.model.entity.ClassStudentsExample;
-import com.gmr.test.model.jsonrequestbody.ClassStudentsJsonRequest;
 import com.gmr.test.model.jsonrequestbody.CreateClassJsonRequest;
 import com.gmr.test.tools.ResultTool;
 import org.springframework.stereotype.Service;
