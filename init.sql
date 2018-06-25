@@ -67,7 +67,7 @@ create table tbl_StudentsPaper(
   student_name varchar(16) not null comment '学生姓名',
   student_score int not null comment '学生得分',
   correct_rate varchar(8) not null comment '学生试卷正确率',
-  is_submit int not null comment '是否提交',
+  is_submit int not null comment '是否提交1提交，2没有提交',
   submit_time timestamp default current_timestamp
           comment '学生提交试卷的时间'
 ) charset = utf8 comment '学生提交的试卷';
