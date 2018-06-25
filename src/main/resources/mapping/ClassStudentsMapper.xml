@@ -3,9 +3,9 @@
 <mapper namespace="com.gmr.test.dao.ClassStudentsMapper" >
   <resultMap id="BaseResultMap" type="com.gmr.test.model.entity.ClassStudents" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="class_id" property="classId" jdbcType="VARCHAR" />
-    <result column="student_id" property="studentId" jdbcType="VARCHAR" />
+    <result column="class_id" property="classId" jdbcType="INTEGER" />
     <result column="student_name" property="studentName" jdbcType="VARCHAR" />
+    <result column="student_id" property="studentId" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -66,7 +66,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, class_id, student_id, student_name
+    id, class_id, student_name, student_id
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.gmr.test.model.entity.ClassStudentsExample" >
     select
@@ -100,10 +100,10 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.gmr.test.model.entity.ClassStudents" >
-    insert into tbl_ClassStudents (id, class_id, student_id, 
-      student_name)
-    values (#{id,jdbcType=INTEGER}, #{classId,jdbcType=VARCHAR}, #{studentId,jdbcType=VARCHAR}, 
-      #{studentName,jdbcType=VARCHAR})
+    insert into tbl_ClassStudents (id, class_id, student_name, 
+      student_id)
+    values (#{id,jdbcType=INTEGER}, #{classId,jdbcType=INTEGER}, #{studentName,jdbcType=VARCHAR}, 
+      #{studentId,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.gmr.test.model.entity.ClassStudents" >
     insert into tbl_ClassStudents
@@ -114,11 +114,11 @@
       <if test="classId != null" >
         class_id,
       </if>
-      <if test="studentId != null" >
-        student_id,
-      </if>
       <if test="studentName != null" >
         student_name,
+      </if>
+      <if test="studentId != null" >
+        student_id,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -126,13 +126,13 @@
         #{id,jdbcType=INTEGER},
       </if>
       <if test="classId != null" >
-        #{classId,jdbcType=VARCHAR},
-      </if>
-      <if test="studentId != null" >
-        #{studentId,jdbcType=VARCHAR},
+        #{classId,jdbcType=INTEGER},
       </if>
       <if test="studentName != null" >
         #{studentName,jdbcType=VARCHAR},
+      </if>
+      <if test="studentId != null" >
+        #{studentId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -149,13 +149,13 @@
         id = #{record.id,jdbcType=INTEGER},
       </if>
       <if test="record.classId != null" >
-        class_id = #{record.classId,jdbcType=VARCHAR},
-      </if>
-      <if test="record.studentId != null" >
-        student_id = #{record.studentId,jdbcType=VARCHAR},
+        class_id = #{record.classId,jdbcType=INTEGER},
       </if>
       <if test="record.studentName != null" >
         student_name = #{record.studentName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.studentId != null" >
+        student_id = #{record.studentId,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -165,9 +165,9 @@
   <update id="updateByExample" parameterType="map" >
     update tbl_ClassStudents
     set id = #{record.id,jdbcType=INTEGER},
-      class_id = #{record.classId,jdbcType=VARCHAR},
-      student_id = #{record.studentId,jdbcType=VARCHAR},
-      student_name = #{record.studentName,jdbcType=VARCHAR}
+      class_id = #{record.classId,jdbcType=INTEGER},
+      student_name = #{record.studentName,jdbcType=VARCHAR},
+      student_id = #{record.studentId,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -176,22 +176,22 @@
     update tbl_ClassStudents
     <set >
       <if test="classId != null" >
-        class_id = #{classId,jdbcType=VARCHAR},
-      </if>
-      <if test="studentId != null" >
-        student_id = #{studentId,jdbcType=VARCHAR},
+        class_id = #{classId,jdbcType=INTEGER},
       </if>
       <if test="studentName != null" >
         student_name = #{studentName,jdbcType=VARCHAR},
+      </if>
+      <if test="studentId != null" >
+        student_id = #{studentId,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.gmr.test.model.entity.ClassStudents" >
     update tbl_ClassStudents
-    set class_id = #{classId,jdbcType=VARCHAR},
-      student_id = #{studentId,jdbcType=VARCHAR},
-      student_name = #{studentName,jdbcType=VARCHAR}
+    set class_id = #{classId,jdbcType=INTEGER},
+      student_name = #{studentName,jdbcType=VARCHAR},
+      student_id = #{studentId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

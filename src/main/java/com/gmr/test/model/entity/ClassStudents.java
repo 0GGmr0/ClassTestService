@@ -3,11 +3,11 @@ package com.gmr.test.model.entity;
 public class ClassStudents {
     private Integer id;
 
-    private String classId;
-
-    private String studentId;
+    private Integer classId;
 
     private String studentName;
+
+    private String studentId;
 
     public Integer getId() {
         return id;
@@ -17,20 +17,12 @@ public class ClassStudents {
         this.id = id;
     }
 
-    public String getClassId() {
+    public Integer getClassId() {
         return classId;
     }
 
-    public void setClassId(String classId) {
-        this.classId = classId == null ? null : classId.trim();
-    }
-
-    public String getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(String studentId) {
-        this.studentId = studentId == null ? null : studentId.trim();
+    public void setClassId(Integer classId) {
+        this.classId = classId;
     }
 
     public String getStudentName() {
@@ -39,5 +31,13 @@ public class ClassStudents {
 
     public void setStudentName(String studentName) {
         this.studentName = studentName == null ? null : studentName.trim();
+    }
+
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId == null ? null : studentId.trim();
     }
 }
