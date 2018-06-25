@@ -59,4 +59,14 @@ public class ClassController {
         return classService.classStudentsInformation(className);
     }
 
+    @RequestMapping(value = "teacher/allClass",method = RequestMethod.GET)
+    public Result teacherClassList(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null) {
+            return ResultTool.error("请登录");
+        }
+        String teacherId = JwtUtil.parseJwt(token);
+        return classService.teacherClassList(teacherId);
+    }
+
 }

@@ -5,6 +5,7 @@ import com.gmr.test.dao.ClassMapper;
 import com.gmr.test.dao.ClassStudentsMapper;
 import com.gmr.test.model.OV.ClassStudentsInfo;
 import com.gmr.test.model.OV.Result;
+import com.gmr.test.model.OV.TeacherClass;
 import com.gmr.test.model.entity.Class;
 import com.gmr.test.model.entity.ClassExample;
 import com.gmr.test.model.entity.ClassStudents;
@@ -94,5 +95,32 @@ public class ClassService {
             return ResultTool.success(classStudentsInfoList);
         }
     }
+
+    /**
+     * @Description: 返回一个教师有所的班级列表
+     * @Param: [teacherId]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-25
+     */
+    public Result teacherClassList(String teacherId) {
+
+        ClassExample classExample = new ClassExample();
+        classExample.createCriteria()
+                .andTeacherIdEqualTo(teacherId);
+        List<Class> classList = classMapper.selectByExample(classExample);
+        if(classList.isEmpty()) {
+            return ResultTool.error("该老师没有班级");
+        }
+        List<TeacherClass> teacherClassList = new LinkedList<>();
+        for(Class teacherClass : classList) {
+            TeacherClass existClass = new TeacherClass();
+            existClass.setTeacherName(teacherClass.getClassName());
+            existClass.setClassIcon(teacherClass.getClassIcon());
+            teacherClassList.add(existClass);
+        }
+        return ResultTool.success(teacherClassList);
+    }
+
 
 }
