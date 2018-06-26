@@ -83,5 +83,21 @@ public class PaperController {
         return paperService.teacherFindPaper(teacherId, paperName, problemType);
     }
 
-
+    /**
+     * @Description: 查找一个试卷的限时
+     * @Param: [httpServletRequest, paperId]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
+    @RequestMapping(value = "both/paperTimeLimit", method = RequestMethod.GET)
+    public Result findPaperLimitTime(HttpServletRequest httpServletRequest,
+                            @RequestParam("Classname") String className,
+                            @RequestParam("Paperid") Integer paperId) {
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null) {
+            return ResultTool.error("请登录");
+        }
+        return paperService.findPaperTimeLimit(className, paperId);
+    }
 }

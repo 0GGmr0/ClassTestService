@@ -5,7 +5,9 @@ import com.gmr.test.dao.PaperForClassMapper;
 import com.gmr.test.dao.PaperMapper;
 import com.gmr.test.dao.PaperProblemsMapper;
 import com.gmr.test.model.OV.Result;
+import com.gmr.test.model.OV.TimeLimitInfo;
 import com.gmr.test.model.entity.*;
+import com.gmr.test.model.entity.Class;
 import com.gmr.test.model.jsonrequestbody.CreatePaperJsonRequest;
 import com.gmr.test.model.jsonrequestbody.FindPaperProblemsJsonRequest;
 import com.gmr.test.model.jsonrequestbody.PullPaperJsonRequest;
@@ -325,6 +327,30 @@ public class PaperService {
         }
         return ResultTool.success(problemsJsonRequestList);
 
+    }
+
+    public Result findPaperTimeLimit(String className, Integer paperId) {
+
+        ClassExample classExample = new ClassExample();
+        classExample.createCriteria()
+                .andClassNameEqualTo(className);
+
+        List<Class> existClass = classMapper.selectByExample(classExample);
+        if(existClass.isEmpty()) {
+            return ResultTool.error("不存在这个班级");
+        }
+
+        PaperForClassExample paperForClassExample = new PaperForClassExample();
+        paperForClassExample.createCriteria()
+                .andClassIdEqualTo(existClass.get(0).getClassId())
+                .andPapperIdEqualTo(paperId);
+        List<PaperForClass> paperList = paperForClassMapper.selectByExample(paperForClassExample);
+        if(paperList.isEmpty()) {
+            return ResultTool.error("这个班级没有发布id为这个号码的试卷");
+        }
+        TimeLimitInfo timeLimitInfo = new TimeLimitInfo();
+        timeLimitInfo.setLimitTime(paperList.get(0).getLimitTime());
+        return ResultTool.success(timeLimitInfo);
     }
 
 }
