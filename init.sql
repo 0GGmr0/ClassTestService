@@ -80,6 +80,7 @@ create table tbl_StudentsAnswer(
   paper_id int not null comment '标识是学生做的哪张试卷',
   students_answer varchar(32) not null comment '问题答案,如果类型是判断题，1对2错',
   problem_id int not null comment '标识是哪个题目',
+  student_id varchar(16) comment '知道是哪个题目',
   problem_type int not null
   comment '题目的类型，1是单选，2是多选，3是判断，4是填空',
   is_right int not null comment '是否正确'

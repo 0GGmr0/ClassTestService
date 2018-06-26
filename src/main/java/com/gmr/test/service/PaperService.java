@@ -515,7 +515,7 @@ public class PaperService {
      * @Author: ggmr
      * @Date: 18-6-26
      */
-    public Integer addAnswer(List<AnswerInfo> answerInfoList, Integer paperId
+    public Integer addAnswer(String studentId, List<AnswerInfo> answerInfoList, Integer paperId
                             , Integer problemType) {
         int correctNum = 0;
         for(AnswerInfo answerInfo : answerInfoList) {
@@ -524,7 +524,8 @@ public class PaperService {
             studentsAnswer.setPaperId(paperId);
             studentsAnswer.setProblemId(answerInfo.getProblemId());
             studentsAnswer.setProblemType(problemType);
-            if(answerInfo == null) {
+            studentsAnswer.setStudentId(studentId);
+            if(answerInfo.getAnswer() == null) {
                 studentsAnswer.setIsRight(2);
                 studentsAnswer.setStudentsAnswer("");
             } else {
@@ -558,10 +559,10 @@ public class PaperService {
         List<AnswerInfo> judge = addStudentsJsonRequest.getJudge();
 
         int correctNum = 0;
-        correctNum += addAnswer(single, paperId, 1);
-        correctNum += addAnswer(multiple, paperId, 2);
-        correctNum += addAnswer(form, paperId, 3);
-        correctNum += addAnswer(judge, paperId, 4);
+        correctNum += addAnswer(studentId, single, paperId, 1);
+        correctNum += addAnswer(studentId, multiple, paperId, 2);
+        correctNum += addAnswer(studentId, form, paperId, 3);
+        correctNum += addAnswer(studentId, judge, paperId, 4);
 
         User student = userMapper.selectByPrimaryKey(studentId);
         StudentsPaper studentsPaper = new StudentsPaper();
@@ -641,4 +642,83 @@ public class PaperService {
 
     }
 
+
+    /**
+     * @Description: 教师查看一个具体的学生的试卷的情况
+     * @Param: [paperId, studentId, problemType]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-27
+     */
+    public Result findSomeStudentPaperInfo(Integer paperId, String studentId, Integer problemType) {
+        Paper paper1 = paperMapper.selectByPrimaryKey(paperId);
+
+        if (paper1 == null) {
+            return ResultTool.error("错误的paperid");
+        }
+
+        //查找到满足条件的所有题目
+        PaperProblemsExample paperProblemsExample = new PaperProblemsExample();
+        paperProblemsExample.createCriteria()
+                .andPaperIdEqualTo(paper1.getPaperId())
+                .andProblemTypeEqualTo(problemType);
+        List<PaperProblems> paperProblemsList = paperProblemsMapper
+                .selectByExample(paperProblemsExample);
+        if (paperProblemsList.isEmpty()) {
+            return ResultTool.error("没有这类型的题目");
+        }
+        List<FindSomeStudentsPaperInfo> findSomeStudentsPaperInfoLinkedList = new LinkedList<>();
+        for (PaperProblems paperProblem : paperProblemsList) {
+            FindSomeStudentsPaperInfo findSomeStudentsPaperInfo = new FindSomeStudentsPaperInfo();
+            findSomeStudentsPaperInfo.setProblem(paperProblem.getProblemContent());
+
+            //如果是选择题，那么会有这个items选项
+            if (problemType == 1 || problemType == 2) {
+                List<ItemJsonRequest> itemJsonRequestList = new LinkedList<>();
+                switch (paperProblem.getChoiceNum()) {
+                    case 4: {
+                        ItemJsonRequest itemJsonRequestD = new ItemJsonRequest();
+                        itemJsonRequestD.setValue(paperProblem.getQuestionD());
+                        itemJsonRequestD.setName("D");
+                        itemJsonRequestList.add(itemJsonRequestD);
+                    }
+                    case 3: {
+                        ItemJsonRequest itemJsonRequestC = new ItemJsonRequest();
+                        itemJsonRequestC.setValue(paperProblem.getQuestionC());
+                        itemJsonRequestC.setName("C");
+                        itemJsonRequestList.add(itemJsonRequestC);
+                    }
+                    case 2: {
+                        ItemJsonRequest itemJsonRequestB = new ItemJsonRequest();
+                        itemJsonRequestB.setValue(paperProblem.getQuestionB());
+                        itemJsonRequestB.setName("B");
+                        itemJsonRequestList.add(itemJsonRequestB);
+                    }
+                    case 1: {
+                        ItemJsonRequest itemJsonRequestA = new ItemJsonRequest();
+                        itemJsonRequestA.setValue(paperProblem.getQuestionA());
+                        itemJsonRequestA.setName("A");
+                        itemJsonRequestList.add(itemJsonRequestA);
+                    }
+                }
+                Collections.reverse(itemJsonRequestList);
+                findSomeStudentsPaperInfo.setRightAnswer(paperProblem.getRightAnswer());
+                findSomeStudentsPaperInfo.setItems(itemJsonRequestList);
+
+                //通过学号和问题号找到学生提交的题目
+                StudentsAnswerExample studentsAnswerExample = new StudentsAnswerExample();
+                studentsAnswerExample.createCriteria()
+                        .andProblemIdEqualTo(paperProblem.getProblemId())
+                        .andStudentIdEqualTo(studentId);
+                StudentsAnswer studentsAnswer = studentsAnswerMapper
+                        .selectByExample(studentsAnswerExample).get(0);
+
+                findSomeStudentsPaperInfo.setIsCorrect(studentsAnswer.getIsRight());
+                findSomeStudentsPaperInfo.setStudentAnswer(studentsAnswer.getStudentsAnswer());
+            }
+            findSomeStudentsPaperInfoLinkedList.add(findSomeStudentsPaperInfo);
+        }
+
+        return ResultTool.success(findSomeStudentsPaperInfoLinkedList);
+    }
 }

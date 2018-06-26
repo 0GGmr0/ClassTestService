@@ -8,6 +8,7 @@
     <result column="problem_id" property="problemId" jdbcType="INTEGER" />
     <result column="problem_type" property="problemType" jdbcType="INTEGER" />
     <result column="is_right" property="isRight" jdbcType="INTEGER" />
+    <result column="student_id" property="studentId" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, paper_id, students_answer, problem_id, problem_type, is_right
+    id, paper_id, students_answer, problem_id, problem_type, is_right, student_id
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.gmr.test.model.entity.StudentsAnswerExample" >
     select
@@ -103,11 +104,11 @@
   </delete>
   <insert id="insert" parameterType="com.gmr.test.model.entity.StudentsAnswer" >
     insert into tbl_StudentsAnswer (id, paper_id, students_answer, 
-      problem_id, problem_type, is_right
-      )
+      problem_id, problem_type, is_right, 
+      student_id)
     values (#{id,jdbcType=INTEGER}, #{paperId,jdbcType=INTEGER}, #{studentsAnswer,jdbcType=VARCHAR}, 
-      #{problemId,jdbcType=INTEGER}, #{problemType,jdbcType=INTEGER}, #{isRight,jdbcType=INTEGER}
-      )
+      #{problemId,jdbcType=INTEGER}, #{problemType,jdbcType=INTEGER}, #{isRight,jdbcType=INTEGER}, 
+      #{studentId,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.gmr.test.model.entity.StudentsAnswer" >
     insert into tbl_StudentsAnswer
@@ -130,6 +131,9 @@
       <if test="isRight != null" >
         is_right,
       </if>
+      <if test="studentId != null" >
+        student_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -149,6 +153,9 @@
       </if>
       <if test="isRight != null" >
         #{isRight,jdbcType=INTEGER},
+      </if>
+      <if test="studentId != null" >
+        #{studentId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -179,6 +186,9 @@
       <if test="record.isRight != null" >
         is_right = #{record.isRight,jdbcType=INTEGER},
       </if>
+      <if test="record.studentId != null" >
+        student_id = #{record.studentId,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -191,7 +201,8 @@
       students_answer = #{record.studentsAnswer,jdbcType=VARCHAR},
       problem_id = #{record.problemId,jdbcType=INTEGER},
       problem_type = #{record.problemType,jdbcType=INTEGER},
-      is_right = #{record.isRight,jdbcType=INTEGER}
+      is_right = #{record.isRight,jdbcType=INTEGER},
+      student_id = #{record.studentId,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -214,6 +225,9 @@
       <if test="isRight != null" >
         is_right = #{isRight,jdbcType=INTEGER},
       </if>
+      <if test="studentId != null" >
+        student_id = #{studentId,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -223,7 +237,8 @@
       students_answer = #{studentsAnswer,jdbcType=VARCHAR},
       problem_id = #{problemId,jdbcType=INTEGER},
       problem_type = #{problemType,jdbcType=INTEGER},
-      is_right = #{isRight,jdbcType=INTEGER}
+      is_right = #{isRight,jdbcType=INTEGER},
+      student_id = #{studentId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

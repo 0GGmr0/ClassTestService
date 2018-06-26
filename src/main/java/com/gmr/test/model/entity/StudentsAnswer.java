@@ -13,6 +13,8 @@ public class StudentsAnswer {
 
     private Integer isRight;
 
+    private String studentId;
+
     public Integer getId() {
         return id;
     }
@@ -59,5 +61,13 @@ public class StudentsAnswer {
 
     public void setIsRight(Integer isRight) {
         this.isRight = isRight;
+    }
+
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId == null ? null : studentId.trim();
     }
 }

@@ -172,4 +172,16 @@ public class PaperController {
     }
 
 
+    @RequestMapping(value = "both/singleProblems", method = RequestMethod.GET)
+    public Result studentsPaperInfo(HttpServletRequest httpServletRequest,
+                                    @RequestParam("Problemtype") Integer problemType,
+                                    @RequestParam("Paperid") Integer paperId) throws ParseException {
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null) {
+            return ResultTool.error("请登录");
+        }
+        String studentId = JwtUtil.parseJwt(token);
+        return paperService.findSomeStudentPaperInfo( paperId, studentId, problemType);
+    }
+
 }
