@@ -153,4 +153,23 @@ public class PaperController {
         return paperService.addStudentsAnswer(studentId, addStudentsJsonRequest);
     }
 
+    /**
+     * @Description: 教师查看班级同学做的试卷的情况
+     * @Param: [httpServletRequest, className, paperId]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-27
+     */
+    @RequestMapping(value = "teacher/paperInformation", method = RequestMethod.GET)
+    public Result studentsPaperInfo(HttpServletRequest httpServletRequest,
+                                    @RequestParam("Classname") String className,
+                                    @RequestParam("Paperid") Integer paperId) throws ParseException {
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null) {
+            return ResultTool.error("请登录");
+        }
+        return paperService.classStudentsPaperInfo(className, paperId);
+    }
+
+
 }

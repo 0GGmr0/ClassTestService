@@ -1,10 +1,7 @@
 package com.gmr.test.service;
 
 import com.gmr.test.dao.*;
-import com.gmr.test.model.OV.FindAllPaperInfo;
-import com.gmr.test.model.OV.Result;
-import com.gmr.test.model.OV.StudentsViewPaper;
-import com.gmr.test.model.OV.TimeLimitInfo;
+import com.gmr.test.model.OV.*;
 import com.gmr.test.model.entity.*;
 import com.gmr.test.model.entity.Class;
 import com.gmr.test.model.jsonrequestbody.AddStudentsJsonRequest;
@@ -31,6 +28,9 @@ import java.util.List;
  */
 @Service
 public class PaperService {
+
+    @Resource
+    private ClassStudentsMapper classStudentsMapper;
 
     @Resource
     private StudentsPaperMapper studentsPaperMapper;
@@ -577,6 +577,68 @@ public class PaperService {
         studentsPaperMapper.insert(studentsPaper);
 
         return ResultTool.success();
+    }
+    
+    /**
+     * @Description: 教师查看学生做试卷的情况
+     * @Param: [className, paperId]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-27
+     */
+    public Result classStudentsPaperInfo(String className, Integer paperId) throws ParseException {
+        ClassExample classExample = new ClassExample();
+        classExample.createCriteria()
+                .andClassNameEqualTo(className);
+
+        List<Class> existClass = classMapper.selectByExample(classExample);
+        if(existClass.isEmpty()) {
+            return ResultTool.error("不存在这个班级");
+        }
+        Integer classId = existClass.get(0).getClassId();
+
+        ClassStudentsExample classStudentsExample = new ClassStudentsExample();
+        classStudentsExample.createCriteria()
+                .andClassIdEqualTo(classId);
+        //获取到这个班级所有学生
+        List<ClassStudents> classStudentsList = classStudentsMapper
+                .selectByExample(classStudentsExample);
+        if(classStudentsList.isEmpty()) {
+            return ResultTool.error("班级没有学生");
+        }
+
+        List<StudentsPaperSituationsInfo> studentsPaperSituationsList = new LinkedList<>();
+        double allCorrect = 0;
+        int count = 0;
+        for(ClassStudents classStudents : classStudentsList) {
+            count++;
+            StudentsPaperExample studentsPaperExample = new StudentsPaperExample();
+            studentsPaperExample.createCriteria()
+                    .andPapperIdEqualTo(paperId)
+                    .andStudentIdEqualTo(classStudents.getStudentId());
+            List<StudentsPaper> studentsPaperList = studentsPaperMapper.selectByExample(studentsPaperExample);
+            StudentsPaperSituationsInfo studentsPaperSituationsInfo = new StudentsPaperSituationsInfo();
+            if(studentsPaperList.isEmpty()) {
+                studentsPaperSituationsInfo.setCorrectionRate("0%");
+            } else {
+                studentsPaperSituationsInfo.setCorrectionRate(studentsPaperList.get(0).getCorrectRate());
+                //百分数变double
+                NumberFormat nf=NumberFormat.getPercentInstance();
+                Number m=nf.parse(studentsPaperList.get(0).getCorrectRate());
+                allCorrect += m.doubleValue();
+            }
+            studentsPaperSituationsInfo.setStudentId(classStudents.getStudentId());
+            studentsPaperSituationsInfo.setStudentName(classStudents.getStudentName());
+            studentsPaperSituationsList.add(studentsPaperSituationsInfo);
+        }
+
+        StudentsPaperSituations studentsPaperSituations = new StudentsPaperSituations();
+        studentsPaperSituations.setSituations(studentsPaperSituationsList);
+        double allCorrectRate = allCorrect/count;
+        DecimalFormat df = new DecimalFormat("0.00%");
+        studentsPaperSituations.setAllCorrection(df.format(allCorrectRate));
+        return ResultTool.success(studentsPaperSituations);
+
     }
 
 }
