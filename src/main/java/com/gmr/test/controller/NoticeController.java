@@ -23,6 +23,13 @@ public class NoticeController {
     @Resource
     private NoticeService noticeService;
 
+    /**
+     * @Description: 增加一个公告
+     * @Param: [httpServletRequest, addNoticeJsonRequest]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
     @RequestMapping(value = "teacher/newNotice", method = RequestMethod.POST)
     public Result addNotice(HttpServletRequest httpServletRequest,
                             @RequestBody AddNoticeJsonRequest addNoticeJsonRequest) {
@@ -35,6 +42,13 @@ public class NoticeController {
     }
 
 
+    /**
+     * @Description: 查询所有的公告
+     * @Param: [httpServletRequest, className]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
     @RequestMapping(value = "both/allNotice", method = RequestMethod.GET)
     public Result findAllNotice(HttpServletRequest httpServletRequest,
                             @RequestParam("Classname") String className) {
@@ -43,5 +57,16 @@ public class NoticeController {
             return ResultTool.error("请登录");
         }
         return noticeService.findAllNotice(className);
+    }
+
+    @RequestMapping(value = "both/someNotice", method = RequestMethod.GET)
+    public Result findAllNotice(HttpServletRequest httpServletRequest,
+                                @RequestParam("Classname") String className,
+                                @RequestParam("Noticename") String noticename) {
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null) {
+            return ResultTool.error("请登录");
+        }
+        return noticeService.findSomeNotice(className, noticename);
     }
 }
