@@ -100,4 +100,24 @@ public class PaperController {
         }
         return paperService.findPaperTimeLimit(className, paperId);
     }
+
+    /**
+     * @Description: 查看一个班级的所有试卷
+     * @Param: [httpServletRequest, className]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
+    @RequestMapping(value = "both/allPaper", method = RequestMethod.GET)
+    public Result findAllPaper(HttpServletRequest httpServletRequest,
+                                     @RequestParam("Classname") String className) {
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null) {
+            return ResultTool.error("请登录");
+        }
+        String userId = JwtUtil.parseJwt(token);
+        return paperService.findAllPaper(userId, className);
+    }
+
+
 }

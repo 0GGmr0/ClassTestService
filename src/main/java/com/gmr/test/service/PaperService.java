@@ -1,9 +1,7 @@
 package com.gmr.test.service;
 
-import com.gmr.test.dao.ClassMapper;
-import com.gmr.test.dao.PaperForClassMapper;
-import com.gmr.test.dao.PaperMapper;
-import com.gmr.test.dao.PaperProblemsMapper;
+import com.gmr.test.dao.*;
+import com.gmr.test.model.OV.FindAllPaperInfo;
 import com.gmr.test.model.OV.Result;
 import com.gmr.test.model.OV.TimeLimitInfo;
 import com.gmr.test.model.entity.*;
@@ -32,6 +30,13 @@ import java.util.List;
  */
 @Service
 public class PaperService {
+
+    @Resource
+    private StudentsPaperMapper studentsPaperMapper;
+
+    @Resource
+    private UserMapper userMapper;
+
     @Resource
     private PaperMapper paperMapper;
 
@@ -365,8 +370,67 @@ public class PaperService {
         return ResultTool.success(timeLimitInfo);
     }
 
-    public Result teacherFindAllPaper(String className) {
-        return null;
+    /**
+     * @Description: 把Date类型的数据转换成String类型的
+     * @Param: [news]
+     * @Return: java.lang.String
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
+    private String changeTimeFormat(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        return dateFormat.format(date);
+    }
+
+    /**
+     * @Description: 查看一个班级的所有试卷
+     * @Param: [className]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
+    public Result findAllPaper(String userId, String className) {
+        ClassExample classExample = new ClassExample();
+        classExample.createCriteria()
+                .andClassNameEqualTo(className);
+
+        List<Class> existClass = classMapper.selectByExample(classExample);
+        if(existClass.isEmpty()) {
+            return ResultTool.error("不存在这个班级");
+        }
+        //找到所有满足条件的试卷
+        Integer classId = existClass.get(0).getClassId();
+        PaperForClassExample paperForClassExample = new PaperForClassExample();
+        paperForClassExample.createCriteria()
+                .andClassIdEqualTo(classId);
+        List<PaperForClass> paperForClassesList = paperForClassMapper.selectByExample(paperForClassExample);
+        if(paperForClassesList.isEmpty()) {
+            return ResultTool.error("该班级没有试卷");
+        }
+
+        User user = userMapper.selectByPrimaryKey(userId);
+
+        List<FindAllPaperInfo> findAllPaperInfoList = new LinkedList<>();
+        for(PaperForClass paperForClass : paperForClassesList) {
+            FindAllPaperInfo findAllPaperInfo = new FindAllPaperInfo();
+            findAllPaperInfo.setDeadline(changeTimeFormat(paperForClass.getDeadline()));
+            findAllPaperInfo.setPaperName(paperMapper.selectByPrimaryKey(paperForClass.getPapperId())
+                                                        .getPaperName());
+            StudentsPaperExample studentsPaperExample = new StudentsPaperExample();
+            //如果是老师，那么status就没有意义
+            if(user.getIdentity() == 2) {
+                studentsPaperExample.createCriteria()
+                        .andStudentIdEqualTo(userId)
+                        .andPapperIdEqualTo(paperForClass.getPapperId());
+                if(studentsPaperMapper.selectByExample(studentsPaperExample).isEmpty()) {
+                    findAllPaperInfo.setStatus(2);
+                } else {
+                    findAllPaperInfo.setStatus(1);
+                }
+            }
+            findAllPaperInfoList.add(findAllPaperInfo);
+        }
+        return ResultTool.success(findAllPaperInfoList);
     }
 
 }

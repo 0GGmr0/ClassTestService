@@ -15,8 +15,6 @@ public class StudentAllClassInfo {
      String className;
      @JsonProperty("Teachername")
      String teacherName;
-     @JsonProperty("Studentnumber")
-     Integer studentnumber;
      @JsonProperty("Classicon")
      String classIcon;
 }
