@@ -119,5 +119,22 @@ public class PaperController {
         return paperService.findAllPaper(userId, className);
     }
 
+    /**
+     * @Description: 学生做题时查看自己的试卷
+     * @Param: [httpServletRequest, paperId, problemType]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
+    @RequestMapping(value = "student/paper", method = RequestMethod.GET)
+    public Result studentsViewPaper(HttpServletRequest httpServletRequest,
+                                    @RequestParam("Paperid") Integer paperId,
+                                    @RequestParam("Problemtype") Integer problemType) {
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null) {
+            return ResultTool.error("请登录");
+        }
+        return paperService.paperInfo(paperId, problemType);
+    }
 
 }

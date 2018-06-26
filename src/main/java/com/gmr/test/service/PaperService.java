@@ -3,6 +3,7 @@ package com.gmr.test.service;
 import com.gmr.test.dao.*;
 import com.gmr.test.model.OV.FindAllPaperInfo;
 import com.gmr.test.model.OV.Result;
+import com.gmr.test.model.OV.StudentsViewPaper;
 import com.gmr.test.model.OV.TimeLimitInfo;
 import com.gmr.test.model.entity.*;
 import com.gmr.test.model.entity.Class;
@@ -428,9 +429,80 @@ public class PaperService {
                     findAllPaperInfo.setStatus(1);
                 }
             }
+            findAllPaperInfo.setPaperId(paperForClass.getPapperId());
             findAllPaperInfoList.add(findAllPaperInfo);
         }
         return ResultTool.success(findAllPaperInfoList);
+    }
+
+
+    /**
+     * @Description: 学生做题时查看试卷
+     * @Param: [paperId, problemType]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
+    public Result paperInfo(Integer paperId, Integer problemType) {
+
+        Paper paper1 = paperMapper.selectByPrimaryKey(paperId);
+
+        if(paper1 == null) {
+            return ResultTool.error("错误的paperid");
+        }
+
+        //查找到满足条件的所有题目
+        PaperProblemsExample paperProblemsExample = new PaperProblemsExample();
+        paperProblemsExample.createCriteria()
+                .andPaperIdEqualTo(paper1.getPaperId())
+                .andProblemTypeEqualTo(problemType);
+        List<PaperProblems> paperProblemsList = paperProblemsMapper
+                .selectByExample(paperProblemsExample);
+        if(paperProblemsList.isEmpty()) {
+            return ResultTool.error("没有这类型的题目");
+        }
+        List<StudentsViewPaper> studentsViewPaperList = new LinkedList<>();
+        for(PaperProblems paperProblem : paperProblemsList) {
+            StudentsViewPaper studentsViewPaper = new StudentsViewPaper();
+            studentsViewPaper.setProblemName(paperProblem.getProblemContent());
+            studentsViewPaper.setProblemId(paperProblem.getProblemId());
+
+            //如果是选择题，那么会有这个items选项
+            if(problemType == 1 || problemType == 2) {
+                List<ItemJsonRequest> itemJsonRequestList = new LinkedList<>();
+                switch (paperProblem.getChoiceNum()) {
+                    case 4 : {
+                        ItemJsonRequest itemJsonRequestD = new ItemJsonRequest();
+                        itemJsonRequestD.setValue(paperProblem.getQuestionD());
+                        itemJsonRequestD.setName("D");
+                        itemJsonRequestList.add(itemJsonRequestD);
+                    }
+                    case 3 : {
+                        ItemJsonRequest itemJsonRequestC = new ItemJsonRequest();
+                        itemJsonRequestC.setValue(paperProblem.getQuestionC());
+                        itemJsonRequestC.setName("C");
+                        itemJsonRequestList.add(itemJsonRequestC);
+                    }
+                    case 2 : {
+                        ItemJsonRequest itemJsonRequestB = new ItemJsonRequest();
+                        itemJsonRequestB.setValue(paperProblem.getQuestionB());
+                        itemJsonRequestB.setName("B");
+                        itemJsonRequestList.add(itemJsonRequestB);
+                    }
+                    case 1 : {
+                        ItemJsonRequest itemJsonRequestA = new ItemJsonRequest();
+                        itemJsonRequestA.setValue(paperProblem.getQuestionA());
+                        itemJsonRequestA.setName("A");
+                        itemJsonRequestList.add(itemJsonRequestA);
+                    }
+                }
+                Collections.reverse(itemJsonRequestList);
+                studentsViewPaper.setItems(itemJsonRequestList);
+            }
+            studentsViewPaperList.add(studentsViewPaper);
+        }
+        return ResultTool.success(studentsViewPaperList);
+
     }
 
 }

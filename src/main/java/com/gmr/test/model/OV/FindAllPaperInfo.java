@@ -11,6 +11,8 @@ import lombok.Data;
  */
 @Data
 public class FindAllPaperInfo {
+    @JsonProperty("Paperid")
+    private Integer paperId;
     @JsonProperty("Papername")
     private String paperName;
     @JsonProperty("Deadline")
