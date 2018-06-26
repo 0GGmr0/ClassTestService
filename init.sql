@@ -90,7 +90,7 @@ create table tbl_Notice(
   teacher_id varchar(16) not null comment '教师工号',
   class_name varchar(32) not null comment '班级名字',
   title varchar(32) not null comment '通知标题',
-  content varchar(1024) not null comment '通知内容',
+  content varchar(1024)  comment '通知内容',
   overview varchar(256) not null comment '从通知内容截取前两百字',
   image varchar(512) comment '图片链接',
   publish_time timestamp default current_timestamp
