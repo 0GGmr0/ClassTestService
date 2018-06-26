@@ -634,6 +634,66 @@ public class PaperProblemsExample {
             return (Criteria) this;
         }
 
+        public Criteria andChoiceNumIsNull() {
+            addCriterion("choice_num is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andChoiceNumIsNotNull() {
+            addCriterion("choice_num is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andChoiceNumEqualTo(Integer value) {
+            addCriterion("choice_num =", value, "choiceNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andChoiceNumNotEqualTo(Integer value) {
+            addCriterion("choice_num <>", value, "choiceNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andChoiceNumGreaterThan(Integer value) {
+            addCriterion("choice_num >", value, "choiceNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andChoiceNumGreaterThanOrEqualTo(Integer value) {
+            addCriterion("choice_num >=", value, "choiceNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andChoiceNumLessThan(Integer value) {
+            addCriterion("choice_num <", value, "choiceNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andChoiceNumLessThanOrEqualTo(Integer value) {
+            addCriterion("choice_num <=", value, "choiceNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andChoiceNumIn(List<Integer> values) {
+            addCriterion("choice_num in", values, "choiceNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andChoiceNumNotIn(List<Integer> values) {
+            addCriterion("choice_num not in", values, "choiceNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andChoiceNumBetween(Integer value1, Integer value2) {
+            addCriterion("choice_num between", value1, value2, "choiceNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andChoiceNumNotBetween(Integer value1, Integer value2) {
+            addCriterion("choice_num not between", value1, value2, "choiceNum");
+            return (Criteria) this;
+        }
+
         public Criteria andRightAnswerIsNull() {
             addCriterion("right_answer is null");
             return (Criteria) this;

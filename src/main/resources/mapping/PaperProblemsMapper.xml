@@ -10,6 +10,7 @@
     <result column="question_b" property="questionB" jdbcType="VARCHAR" />
     <result column="question_c" property="questionC" jdbcType="VARCHAR" />
     <result column="question_d" property="questionD" jdbcType="VARCHAR" />
+    <result column="choice_num" property="choiceNum" jdbcType="INTEGER" />
     <result column="right_answer" property="rightAnswer" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -72,7 +73,7 @@
   </sql>
   <sql id="Base_Column_List" >
     problem_id, paper_id, problem_content, problem_type, question_a, question_b, question_c, 
-    question_d, right_answer
+    question_d, choice_num, right_answer
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.gmr.test.model.entity.PaperProblemsExample" >
     select
@@ -108,12 +109,12 @@
   <insert id="insert" parameterType="com.gmr.test.model.entity.PaperProblems" >
     insert into tbl_PaperProblems (problem_id, paper_id, problem_content, 
       problem_type, question_a, question_b, 
-      question_c, question_d, right_answer
-      )
+      question_c, question_d, choice_num, 
+      right_answer)
     values (#{problemId,jdbcType=INTEGER}, #{paperId,jdbcType=INTEGER}, #{problemContent,jdbcType=VARCHAR}, 
       #{problemType,jdbcType=INTEGER}, #{questionA,jdbcType=VARCHAR}, #{questionB,jdbcType=VARCHAR}, 
-      #{questionC,jdbcType=VARCHAR}, #{questionD,jdbcType=VARCHAR}, #{rightAnswer,jdbcType=VARCHAR}
-      )
+      #{questionC,jdbcType=VARCHAR}, #{questionD,jdbcType=VARCHAR}, #{choiceNum,jdbcType=INTEGER}, 
+      #{rightAnswer,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.gmr.test.model.entity.PaperProblems" >
     insert into tbl_PaperProblems
@@ -141,6 +142,9 @@
       </if>
       <if test="questionD != null" >
         question_d,
+      </if>
+      <if test="choiceNum != null" >
+        choice_num,
       </if>
       <if test="rightAnswer != null" >
         right_answer,
@@ -170,6 +174,9 @@
       </if>
       <if test="questionD != null" >
         #{questionD,jdbcType=VARCHAR},
+      </if>
+      <if test="choiceNum != null" >
+        #{choiceNum,jdbcType=INTEGER},
       </if>
       <if test="rightAnswer != null" >
         #{rightAnswer,jdbcType=VARCHAR},
@@ -209,6 +216,9 @@
       <if test="record.questionD != null" >
         question_d = #{record.questionD,jdbcType=VARCHAR},
       </if>
+      <if test="record.choiceNum != null" >
+        choice_num = #{record.choiceNum,jdbcType=INTEGER},
+      </if>
       <if test="record.rightAnswer != null" >
         right_answer = #{record.rightAnswer,jdbcType=VARCHAR},
       </if>
@@ -227,6 +237,7 @@
       question_b = #{record.questionB,jdbcType=VARCHAR},
       question_c = #{record.questionC,jdbcType=VARCHAR},
       question_d = #{record.questionD,jdbcType=VARCHAR},
+      choice_num = #{record.choiceNum,jdbcType=INTEGER},
       right_answer = #{record.rightAnswer,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -256,6 +267,9 @@
       <if test="questionD != null" >
         question_d = #{questionD,jdbcType=VARCHAR},
       </if>
+      <if test="choiceNum != null" >
+        choice_num = #{choiceNum,jdbcType=INTEGER},
+      </if>
       <if test="rightAnswer != null" >
         right_answer = #{rightAnswer,jdbcType=VARCHAR},
       </if>
@@ -271,6 +285,7 @@
       question_b = #{questionB,jdbcType=VARCHAR},
       question_c = #{questionC,jdbcType=VARCHAR},
       question_d = #{questionD,jdbcType=VARCHAR},
+      choice_num = #{choiceNum,jdbcType=INTEGER},
       right_answer = #{rightAnswer,jdbcType=VARCHAR}
     where problem_id = #{problemId,jdbcType=INTEGER}
   </update>

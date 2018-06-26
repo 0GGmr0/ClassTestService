@@ -7,6 +7,7 @@ import com.gmr.test.dao.PaperProblemsMapper;
 import com.gmr.test.model.OV.Result;
 import com.gmr.test.model.entity.*;
 import com.gmr.test.model.jsonrequestbody.CreatePaperJsonRequest;
+import com.gmr.test.model.jsonrequestbody.FindPaperProblemsJsonRequest;
 import com.gmr.test.model.jsonrequestbody.PullPaperJsonRequest;
 import com.gmr.test.model.jsonrequestbody.createpaperAssembly.ItemJsonRequest;
 import com.gmr.test.model.jsonrequestbody.createpaperAssembly.ProblemsJsonRequest;
@@ -17,8 +18,11 @@ import javax.annotation.Resource;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @program: test
@@ -98,11 +102,16 @@ public class PaperService {
         List<ProblemsJsonRequest> formProblemsList = createPaperJsonRequest.getForm();
         List<ProblemsJsonRequest> judgeProblemsList = createPaperJsonRequest.getJudge();
 
+        if(singleProblemsList.isEmpty() && multipleProblemsList.isEmpty() &&
+                formProblemsList.isEmpty() && judgeProblemsList.isEmpty()) {
+            return ResultTool.error("试卷为空");
+        }
         //判断这个老师是不是已经出过同名试卷
         PaperExample paperExample = new PaperExample();
         paperExample.createCriteria()
                 .andTeacherIdEqualTo(teacherId)
                 .andPaperNameEqualTo(paperName);
+        //老师没有出过同名试卷
         if(paperMapper.selectByExample(paperExample).isEmpty()) {
             //数据库插入试卷总表
             Paper paper = new Paper();
@@ -116,22 +125,30 @@ public class PaperService {
             paperExample.createCriteria()
                     .andPaperNameEqualTo(paperName);
             Integer paperId = paperMapper.selectByExample(paperExample).get(0).getPaperId();
+
+            //因为前端给我的题目的第一个总是空的，所以我这边用一个count来计数，把第一个舍弃
+            int count = 0;
             //数据库插入单项选择题
             if(singleProblemsList.isEmpty() == false) {
                 for (ProblemsJsonRequest problemsJsonRequest : singleProblemsList) {
+                    if(count == 0) {
+                        count++;
+                        continue;
+                    }
                     PaperProblems paperProblems = new PaperProblems();
                     paperProblems.setProblemContent(problemsJsonRequest.getProblem());
                     List<ItemJsonRequest> options = problemsJsonRequest.getItems();
                     switch (options.size()) {
                         case 4:
-                            paperProblems.setQuestionD(options.get(3).getName() + options.get(3).getValue());
+                            paperProblems.setQuestionD(options.get(3).getValue());
                         case 3:
-                            paperProblems.setQuestionC(options.get(2).getName() + options.get(2).getValue());
+                            paperProblems.setQuestionC(options.get(2).getValue());
                         case 2:
-                            paperProblems.setQuestionB(options.get(1).getName() + options.get(1).getValue());
+                            paperProblems.setQuestionB(options.get(1).getValue());
                         case 1:
-                            paperProblems.setQuestionA(options.get(0).getName() + options.get(0).getValue());
+                            paperProblems.setQuestionA(options.get(0).getValue());
                     }
+                    paperProblems.setChoiceNum(options.size());
                     paperProblems.setProblemType(1);
                     paperProblems.setRightAnswer(problemsJsonRequest.getAnswer());
                     paperProblems.setPaperId(paperId);
@@ -140,29 +157,41 @@ public class PaperService {
             }
             //数据库插入多选题
             if(multipleProblemsList.isEmpty() == false) {
+                count = 0;
                 for (ProblemsJsonRequest problemsJsonRequest : multipleProblemsList) {
+                    if(count == 0) {
+                        count++;
+                        continue;
+                    }
                     PaperProblems paperProblems = new PaperProblems();
                     paperProblems.setProblemContent(problemsJsonRequest.getProblem());
                     List<ItemJsonRequest> options = problemsJsonRequest.getItems();
                     switch (options.size()) {
                         case 4:
-                            paperProblems.setQuestionD(options.get(3).getName() + options.get(3).getValue());
+                            paperProblems.setQuestionD(options.get(3).getValue());
                         case 3:
-                            paperProblems.setQuestionC(options.get(2).getName() + options.get(2).getValue());
+                            paperProblems.setQuestionC(options.get(2).getValue());
                         case 2:
-                            paperProblems.setQuestionB(options.get(1).getName() + options.get(1).getValue());
+                            paperProblems.setQuestionB(options.get(1).getValue());
                         case 1:
-                            paperProblems.setQuestionA(options.get(0).getName() + options.get(0).getValue());
+                            paperProblems.setQuestionA(options.get(0).getValue());
                     }
+                    paperProblems.setChoiceNum(options.size());
                     paperProblems.setProblemType(2);
                     paperProblems.setRightAnswer(problemsJsonRequest.getAnswer());
                     paperProblems.setPaperId(paperId);
                     paperProblemsMapper.insert(paperProblems);
                 }
             }
+
+            //数据库插入填空题
             if(formProblemsList.isEmpty() == false) {
-                //数据库插入填空题
+                count = 0;
                 for (ProblemsJsonRequest problemsJsonRequest : formProblemsList) {
+                    if(count == 0) {
+                        count++;
+                        continue;
+                    }
                     PaperProblems paperProblems = new PaperProblems();
                     paperProblems.setProblemContent(problemsJsonRequest.getProblem());
                     paperProblems.setProblemType(3);
@@ -173,7 +202,12 @@ public class PaperService {
             }
             //数据库插入判断题
             if(judgeProblemsList.isEmpty() == false) {
+                count = 0;
                 for (ProblemsJsonRequest problemsJsonRequest : judgeProblemsList) {
+                    if(count == 0) {
+                        count++;
+                        continue;
+                    }
                     PaperProblems paperProblems = new PaperProblems();
                     paperProblems.setProblemContent(problemsJsonRequest.getProblem());
                     paperProblems.setProblemType(4);
@@ -225,6 +259,72 @@ public class PaperService {
         paperForClass.setTeacherId(teacherId);
         paperForClassMapper.insert(paperForClass);
         return ResultTool.success();
+    }
+
+    /**
+     * @Description: 教师查看自己出的试卷
+     * @Param: [teacherId, findPaperProblemsJsonRequest]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
+    public Result teacherFindPaper(String teacherId, String paperName, Integer problemType) {
+        Paper paper = findPaperByName(teacherId, paperName);
+        if(paper == null) {
+            return ResultTool.error("您没有这个名字的试卷");
+        }
+        //查找到满足条件的所有题目
+        PaperProblemsExample paperProblemsExample = new PaperProblemsExample();
+        paperProblemsExample.createCriteria()
+                .andPaperIdEqualTo(paper.getPaperId())
+                .andProblemTypeEqualTo(problemType);
+        List<PaperProblems> paperProblemsList = paperProblemsMapper
+                                    .selectByExample(paperProblemsExample);
+        if(paperProblemsList.isEmpty()) {
+            return ResultTool.error("您没有出这类型的题目");
+        }
+        List<ProblemsJsonRequest> problemsJsonRequestList = new LinkedList<>();
+        for(PaperProblems paperProblem : paperProblemsList) {
+            ProblemsJsonRequest problemsJsonRequest = new ProblemsJsonRequest();
+            problemsJsonRequest.setProblem(paperProblem.getProblemContent());
+            problemsJsonRequest.setAnswer(paperProblem.getRightAnswer());
+
+            //如果是选择题，那么会有这个items选项
+            if(problemType == 1 || problemType == 2) {
+                List<ItemJsonRequest> itemJsonRequestList = new LinkedList<>();
+                switch (paperProblem.getChoiceNum()) {
+                    case 4 : {
+                        ItemJsonRequest itemJsonRequestD = new ItemJsonRequest();
+                        itemJsonRequestD.setValue(paperProblem.getQuestionD());
+                        itemJsonRequestD.setName("D");
+                        itemJsonRequestList.add(itemJsonRequestD);
+                    }
+                    case 3 : {
+                        ItemJsonRequest itemJsonRequestC = new ItemJsonRequest();
+                        itemJsonRequestC.setValue(paperProblem.getQuestionC());
+                        itemJsonRequestC.setName("C");
+                        itemJsonRequestList.add(itemJsonRequestC);
+                    }
+                    case 2 : {
+                        ItemJsonRequest itemJsonRequestB = new ItemJsonRequest();
+                        itemJsonRequestB.setValue(paperProblem.getQuestionB());
+                        itemJsonRequestB.setName("B");
+                        itemJsonRequestList.add(itemJsonRequestB);
+                    }
+                    case 1 : {
+                        ItemJsonRequest itemJsonRequestA = new ItemJsonRequest();
+                        itemJsonRequestA.setValue(paperProblem.getQuestionA());
+                        itemJsonRequestA.setName("A");
+                        itemJsonRequestList.add(itemJsonRequestA);
+                    }
+                }
+                Collections.reverse(itemJsonRequestList);
+                problemsJsonRequest.setItems(itemJsonRequestList);
+            }
+            problemsJsonRequestList.add(problemsJsonRequest);
+        }
+        return ResultTool.success(problemsJsonRequestList);
+
     }
 
 }

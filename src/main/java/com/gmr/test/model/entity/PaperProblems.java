@@ -17,6 +17,8 @@ public class PaperProblems {
 
     private String questionD;
 
+    private Integer choiceNum;
+
     private String rightAnswer;
 
     public Integer getProblemId() {
@@ -81,6 +83,14 @@ public class PaperProblems {
 
     public void setQuestionD(String questionD) {
         this.questionD = questionD == null ? null : questionD.trim();
+    }
+
+    public Integer getChoiceNum() {
+        return choiceNum;
+    }
+
+    public void setChoiceNum(Integer choiceNum) {
+        this.choiceNum = choiceNum;
     }
 
     public String getRightAnswer() {

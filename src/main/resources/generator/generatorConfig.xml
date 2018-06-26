@@ -68,12 +68,12 @@
                enableDeleteByExample="true"
                enableSelectByExample="true"
                selectByExampleQueryId="true"/>
-        <!--<table tableName="tbl_PaperProblems" domainObjectName="PaperProblems"-->
-               <!--enableCountByExample="true"-->
-               <!--enableUpdateByExample="true"-->
-               <!--enableDeleteByExample="true"-->
-               <!--enableSelectByExample="true"-->
-               <!--selectByExampleQueryId="true"/>-->
+        <table tableName="tbl_PaperProblems" domainObjectName="PaperProblems"
+               enableCountByExample="true"
+               enableUpdateByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               selectByExampleQueryId="true"/>
         <!--<table tableName="tbl_StudentsAnswer" domainObjectName="StudentsAnswer"-->
                <!--enableCountByExample="true"-->
                <!--enableUpdateByExample="true"-->

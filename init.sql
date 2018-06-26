@@ -42,6 +42,7 @@ create table tbl_PaperProblems(
   question_b varchar(64) comment '如果是选择题，那么这就是选项B',
   question_c varchar(64) comment '如果是选择题，那么这就是选项C',
   question_d varchar(64) comment '如果是选择题，那么这就是选项D',
+  choice_num int default 0 comment '如果是选择题，选择题的选项个数',
   right_answer varchar(32)
             comment '问题正确答案,如果类型是判断题，1对2错'
 ) charset = utf8 comment '试卷题目表';
