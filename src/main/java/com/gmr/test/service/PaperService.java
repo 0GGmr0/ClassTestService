@@ -9,7 +9,6 @@ import com.gmr.test.model.OV.TimeLimitInfo;
 import com.gmr.test.model.entity.*;
 import com.gmr.test.model.entity.Class;
 import com.gmr.test.model.jsonrequestbody.CreatePaperJsonRequest;
-import com.gmr.test.model.jsonrequestbody.FindPaperProblemsJsonRequest;
 import com.gmr.test.model.jsonrequestbody.PullPaperJsonRequest;
 import com.gmr.test.model.jsonrequestbody.createpaperAssembly.ItemJsonRequest;
 import com.gmr.test.model.jsonrequestbody.createpaperAssembly.ProblemsJsonRequest;
@@ -24,7 +23,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * @program: test

@@ -373,6 +373,66 @@ public class ClassExample {
             addCriterion("class_icon not between", value1, value2, "classIcon");
             return (Criteria) this;
         }
+
+        public Criteria andStudentNumIsNull() {
+            addCriterion("student_num is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStudentNumIsNotNull() {
+            addCriterion("student_num is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStudentNumEqualTo(Integer value) {
+            addCriterion("student_num =", value, "studentNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andStudentNumNotEqualTo(Integer value) {
+            addCriterion("student_num <>", value, "studentNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andStudentNumGreaterThan(Integer value) {
+            addCriterion("student_num >", value, "studentNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andStudentNumGreaterThanOrEqualTo(Integer value) {
+            addCriterion("student_num >=", value, "studentNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andStudentNumLessThan(Integer value) {
+            addCriterion("student_num <", value, "studentNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andStudentNumLessThanOrEqualTo(Integer value) {
+            addCriterion("student_num <=", value, "studentNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andStudentNumIn(List<Integer> values) {
+            addCriterion("student_num in", values, "studentNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andStudentNumNotIn(List<Integer> values) {
+            addCriterion("student_num not in", values, "studentNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andStudentNumBetween(Integer value1, Integer value2) {
+            addCriterion("student_num between", value1, value2, "studentNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andStudentNumNotBetween(Integer value1, Integer value2) {
+            addCriterion("student_num not between", value1, value2, "studentNum");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

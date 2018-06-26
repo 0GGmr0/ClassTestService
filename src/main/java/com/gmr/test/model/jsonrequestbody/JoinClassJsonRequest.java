@@ -11,6 +11,6 @@ import lombok.Data;
  */
 @Data
 public class JoinClassJsonRequest {
-    @JsonProperty("ClassName")
+    @JsonProperty("Classname")
     String className;
 }

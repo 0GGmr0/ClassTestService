@@ -6,6 +6,7 @@
     <result column="class_name" property="className" jdbcType="VARCHAR" />
     <result column="teacher_id" property="teacherId" jdbcType="VARCHAR" />
     <result column="class_icon" property="classIcon" jdbcType="VARCHAR" />
+    <result column="student_num" property="studentNum" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -66,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    class_id, class_name, teacher_id, class_icon
+    class_id, class_name, teacher_id, class_icon, student_num
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.gmr.test.model.entity.ClassExample" >
     select
@@ -101,9 +102,9 @@
   </delete>
   <insert id="insert" parameterType="com.gmr.test.model.entity.Class" >
     insert into tbl_Class (class_id, class_name, teacher_id, 
-      class_icon)
+      class_icon, student_num)
     values (#{classId,jdbcType=INTEGER}, #{className,jdbcType=VARCHAR}, #{teacherId,jdbcType=VARCHAR}, 
-      #{classIcon,jdbcType=VARCHAR})
+      #{classIcon,jdbcType=VARCHAR}, #{studentNum,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.gmr.test.model.entity.Class" >
     insert into tbl_Class
@@ -120,6 +121,9 @@
       <if test="classIcon != null" >
         class_icon,
       </if>
+      <if test="studentNum != null" >
+        student_num,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="classId != null" >
@@ -133,6 +137,9 @@
       </if>
       <if test="classIcon != null" >
         #{classIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="studentNum != null" >
+        #{studentNum,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -157,6 +164,9 @@
       <if test="record.classIcon != null" >
         class_icon = #{record.classIcon,jdbcType=VARCHAR},
       </if>
+      <if test="record.studentNum != null" >
+        student_num = #{record.studentNum,jdbcType=INTEGER},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -167,7 +177,8 @@
     set class_id = #{record.classId,jdbcType=INTEGER},
       class_name = #{record.className,jdbcType=VARCHAR},
       teacher_id = #{record.teacherId,jdbcType=VARCHAR},
-      class_icon = #{record.classIcon,jdbcType=VARCHAR}
+      class_icon = #{record.classIcon,jdbcType=VARCHAR},
+      student_num = #{record.studentNum,jdbcType=INTEGER}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -184,6 +195,9 @@
       <if test="classIcon != null" >
         class_icon = #{classIcon,jdbcType=VARCHAR},
       </if>
+      <if test="studentNum != null" >
+        student_num = #{studentNum,jdbcType=INTEGER},
+      </if>
     </set>
     where class_id = #{classId,jdbcType=INTEGER}
   </update>
@@ -191,7 +205,8 @@
     update tbl_Class
     set class_name = #{className,jdbcType=VARCHAR},
       teacher_id = #{teacherId,jdbcType=VARCHAR},
-      class_icon = #{classIcon,jdbcType=VARCHAR}
+      class_icon = #{classIcon,jdbcType=VARCHAR},
+      student_num = #{studentNum,jdbcType=INTEGER}
     where class_id = #{classId,jdbcType=INTEGER}
   </update>
 </mapper>

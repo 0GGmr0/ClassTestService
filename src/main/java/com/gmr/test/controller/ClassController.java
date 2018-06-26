@@ -95,4 +95,15 @@ public class ClassController {
         return classService.joinClass(studentId, joinClassJsonRequest);
     }
 
+    @RequestMapping(value = "student/classList",method = RequestMethod.GET)
+    public Result studentClassList(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null) {
+            return ResultTool.error("请登录");
+        }
+        String studentId = JwtUtil.parseJwt(token);
+        return classService.studentClassList(studentId);
+    }
+
+
 }

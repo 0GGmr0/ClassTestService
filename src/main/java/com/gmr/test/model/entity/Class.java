@@ -9,6 +9,8 @@ public class Class {
 
     private String classIcon;
 
+    private Integer studentNum;
+
     public Integer getClassId() {
         return classId;
     }
@@ -39,5 +41,13 @@ public class Class {
 
     public void setClassIcon(String classIcon) {
         this.classIcon = classIcon == null ? null : classIcon.trim();
+    }
+
+    public Integer getStudentNum() {
+        return studentNum;
+    }
+
+    public void setStudentNum(Integer studentNum) {
+        this.studentNum = studentNum;
     }
 }

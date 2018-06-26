@@ -6,6 +6,7 @@ import com.gmr.test.dao.ClassStudentsMapper;
 import com.gmr.test.dao.UserMapper;
 import com.gmr.test.model.OV.ClassStudentsInfo;
 import com.gmr.test.model.OV.Result;
+import com.gmr.test.model.OV.StudentAllClassInfo;
 import com.gmr.test.model.OV.TeacherClass;
 import com.gmr.test.model.entity.*;
 import com.gmr.test.model.entity.Class;
@@ -135,7 +136,7 @@ public class ClassService {
      * @Date: 18-6-26
      */
     public Result joinClass(String studentsId, JoinClassJsonRequest joinClassJsonRequest) {
-        String className = joinClassJsonRequest.getClassname();
+        String className = joinClassJsonRequest.getClassName();
         ClassExample classExample = new ClassExample();
         classExample.createCriteria()
                 .andClassNameEqualTo(className);
@@ -144,14 +145,45 @@ public class ClassService {
         if (existClass.isEmpty()) {
             return ResultTool.error("不存在这个班级");
         }
-
+        Class class1 = existClass.get(0);
+        class1.setStudentNum(class1.getStudentNum() + 1);
         User student = userMapper.selectByPrimaryKey(studentsId);
         ClassStudents classStudents = new ClassStudents();
-        classStudents.setClassId(existClass.get(0).getClassId());
+        classStudents.setClassId(class1.getClassId());
         classStudents.setStudentId(studentsId);
         classStudents.setStudentName(student.getUserName());
         classStudentsMapper.insert(classStudents);
+        classMapper.updateByPrimaryKeySelective(class1);
         return ResultTool.success();
+    }
+
+    public Result studentClassList(String studentId) {
+
+        //根据学生id找到所有的加入的班级
+        ClassStudentsExample classStudentsExample = new ClassStudentsExample();
+        classStudentsExample.createCriteria()
+                .andStudentIdEqualTo(studentId);
+        List<ClassStudents> classStudentsList = classStudentsMapper
+                .selectByExample(classStudentsExample);
+        if(classStudentsList.isEmpty()) {
+            return ResultTool.error("该学生没有加入任何班级");
+        }
+
+        List<StudentAllClassInfo> studentAllClassInfoList = new LinkedList<>();
+        for(ClassStudents classStudents : classStudentsList) {
+            Integer classId = classStudents.getClassId();
+            Class class1 = classMapper.selectByPrimaryKey(classId);
+            StudentAllClassInfo studentAllClassInfo = new StudentAllClassInfo();
+            studentAllClassInfo.setClassIcon(class1.getClassIcon());
+            studentAllClassInfo.setClassName(class1.getClassName());
+            studentAllClassInfo.setStudentnumber(class1.getStudentNum());
+            User teacher = userMapper.selectByPrimaryKey(class1.getTeacherId());
+            studentAllClassInfo.setTeacherName(teacher.getUserName());
+
+            studentAllClassInfoList.add(studentAllClassInfo);
+        }
+
+        return ResultTool.success(studentAllClassInfoList);
     }
 
 }

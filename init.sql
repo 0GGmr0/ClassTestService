@@ -9,6 +9,7 @@ create table tbl_Class(
 
   class_id int auto_increment primary key
          comment '作为选择班级的唯一标示',
+  students_num int default 0 comment '学生人数',
   class_name varchar(32) not null comment '班级名字',
   teacher_id varchar(16) not null comment '教师工号',
   class_icon varchar(256) default 'http://oukrdttii.bkt.clouddn.com/18-6-24/60283894.jpg'
