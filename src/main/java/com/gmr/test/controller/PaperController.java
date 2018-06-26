@@ -1,10 +1,7 @@
 package com.gmr.test.controller;
 
 import com.gmr.test.model.OV.Result;
-import com.gmr.test.model.jsonrequestbody.CreateClassJsonRequest;
-import com.gmr.test.model.jsonrequestbody.CreatePaperJsonRequest;
-import com.gmr.test.model.jsonrequestbody.FindPaperProblemsJsonRequest;
-import com.gmr.test.model.jsonrequestbody.PullPaperJsonRequest;
+import com.gmr.test.model.jsonrequestbody.*;
 import com.gmr.test.service.PaperService;
 import com.gmr.test.tools.JwtUtil;
 import com.gmr.test.tools.ResultTool;
@@ -135,6 +132,25 @@ public class PaperController {
             return ResultTool.error("请登录");
         }
         return paperService.paperInfo(paperId, problemType);
+    }
+
+    
+    /**
+     * @Description: 学生提交试卷
+     * @Param: [httpServletRequest, addStudentsJsonRequest]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
+    @RequestMapping(value = "student/postAnswer", method = RequestMethod.POST)
+    public Result addAnswer(HttpServletRequest httpServletRequest,
+                            @RequestBody AddStudentsJsonRequest addStudentsJsonRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null) {
+            return ResultTool.error("请登录");
+        }
+        String studentId = JwtUtil.parseJwt(token);
+        return paperService.addStudentsAnswer(studentId, addStudentsJsonRequest);
     }
 
 }

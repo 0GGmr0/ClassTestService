@@ -7,17 +7,17 @@ import com.gmr.test.model.OV.StudentsViewPaper;
 import com.gmr.test.model.OV.TimeLimitInfo;
 import com.gmr.test.model.entity.*;
 import com.gmr.test.model.entity.Class;
+import com.gmr.test.model.jsonrequestbody.AddStudentsJsonRequest;
 import com.gmr.test.model.jsonrequestbody.CreatePaperJsonRequest;
 import com.gmr.test.model.jsonrequestbody.PullPaperJsonRequest;
+import com.gmr.test.model.jsonrequestbody.answerInfo.AnswerInfo;
 import com.gmr.test.model.jsonrequestbody.createpaperAssembly.ItemJsonRequest;
 import com.gmr.test.model.jsonrequestbody.createpaperAssembly.ProblemsJsonRequest;
 import com.gmr.test.tools.ResultTool;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -49,6 +49,9 @@ public class PaperService {
 
     @Resource
     private ClassMapper classMapper;
+
+    @Resource
+    private StudentsAnswerMapper studentsAnswerMapper;
 
     /**
      * @Description: 通过试卷名查找试卷
@@ -502,7 +505,78 @@ public class PaperService {
             studentsViewPaperList.add(studentsViewPaper);
         }
         return ResultTool.success(studentsViewPaperList);
+    }
 
+
+    /**
+     * @Description: 通过指定数据在数据库添加学生做的题目
+     * @Param: [answerInfoList, paperId, problemType]
+     * @Return: java.lang.Integer
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
+    public Integer addAnswer(List<AnswerInfo> answerInfoList, Integer paperId
+                            , Integer problemType) {
+        int correctNum = 0;
+        for(AnswerInfo answerInfo : answerInfoList) {
+            StudentsAnswer studentsAnswer = new StudentsAnswer();
+            PaperProblems paperProblems = paperProblemsMapper.selectByPrimaryKey(answerInfo.getProblemId());
+            studentsAnswer.setPaperId(paperId);
+            studentsAnswer.setProblemId(answerInfo.getProblemId());
+            studentsAnswer.setProblemType(problemType);
+            if(answerInfo == null) {
+                studentsAnswer.setIsRight(2);
+                studentsAnswer.setStudentsAnswer("");
+            } else {
+                if(answerInfo.getAnswer().equals(paperProblems.getRightAnswer())) {
+                    correctNum++;
+                    studentsAnswer.setIsRight(1);
+                } else {
+                    studentsAnswer.setIsRight(2);
+                }
+                studentsAnswer.setStudentsAnswer(answerInfo.getAnswer());
+            }
+            studentsAnswerMapper.insert(studentsAnswer);
+        }
+        return correctNum;
+    }
+
+
+    /**
+     * @Description: 学生提交试卷
+     * @Param: [studentId, addStudentsJsonRequest]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
+    public Result addStudentsAnswer(String studentId,
+                                    AddStudentsJsonRequest addStudentsJsonRequest) {
+        Integer paperId = addStudentsJsonRequest.getPaperId();
+        List<AnswerInfo> single = addStudentsJsonRequest.getSingle();
+        List<AnswerInfo> multiple = addStudentsJsonRequest.getMultiple();
+        List<AnswerInfo> form = addStudentsJsonRequest.getForm();
+        List<AnswerInfo> judge = addStudentsJsonRequest.getJudge();
+
+        int correctNum = 0;
+        correctNum += addAnswer(single, paperId, 1);
+        correctNum += addAnswer(multiple, paperId, 2);
+        correctNum += addAnswer(form, paperId, 3);
+        correctNum += addAnswer(judge, paperId, 4);
+
+        User student = userMapper.selectByPrimaryKey(studentId);
+        StudentsPaper studentsPaper = new StudentsPaper();
+        studentsPaper.setStudentName(student.getUserName());
+        studentsPaper.setStudentId(studentId);
+        studentsPaper.setPapperId(paperId);
+        studentsPaper.setIsSubmit(1);
+        studentsPaper.setStudentScore(correctNum);
+        Paper paper = paperMapper.selectByPrimaryKey(paperId);
+        double correctRate = (double) correctNum / paper.getProbleNum();
+        DecimalFormat df = new DecimalFormat("0.00%");
+        studentsPaper.setCorrectRate(df.format(correctRate));
+        studentsPaperMapper.insert(studentsPaper);
+
+        return ResultTool.success();
     }
 
 }
