@@ -224,6 +224,13 @@ public class PaperService {
         }
     }
 
+    /**
+     * @Description: 把String类型的时间转换成Date类型
+     * @Param: [strDate]
+     * @Return: java.util.Date
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
     private Date stringToDate(String strDate) throws ParseException {
         DateFormat fmt =new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return fmt.parse(strDate);
@@ -329,6 +336,13 @@ public class PaperService {
 
     }
 
+    /**
+     * @Description: 查找一个试卷的时间限制
+     * @Param: [className, paperId]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
     public Result findPaperTimeLimit(String className, Integer paperId) {
 
         ClassExample classExample = new ClassExample();
@@ -351,6 +365,10 @@ public class PaperService {
         TimeLimitInfo timeLimitInfo = new TimeLimitInfo();
         timeLimitInfo.setLimitTime(paperList.get(0).getLimitTime());
         return ResultTool.success(timeLimitInfo);
+    }
+
+    public Result teacherFindAllPaper(String className) {
+        return null;
     }
 
 }

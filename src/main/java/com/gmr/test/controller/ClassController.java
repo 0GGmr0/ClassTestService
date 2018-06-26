@@ -2,6 +2,7 @@ package com.gmr.test.controller;
 
 import com.gmr.test.model.OV.Result;
 import com.gmr.test.model.jsonrequestbody.CreateClassJsonRequest;
+import com.gmr.test.model.jsonrequestbody.JoinClassJsonRequest;
 import com.gmr.test.service.ClassService;
 import com.gmr.test.tools.JwtUtil;
 import com.gmr.test.tools.ResultTool;
@@ -74,6 +75,24 @@ public class ClassController {
         }
         String teacherId = JwtUtil.parseJwt(token);
         return classService.teacherClassList(teacherId);
+    }
+
+    /**
+     * @Description: 学生加入一个班级
+     * @Param: [httpServletRequest, joinClassJsonRequest]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
+    @RequestMapping(value = "student/joinClass",method = RequestMethod.POST)
+    public Result joinClass(HttpServletRequest httpServletRequest,
+                            @RequestBody JoinClassJsonRequest joinClassJsonRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null) {
+            return ResultTool.error("请登录");
+        }
+        String studentId = JwtUtil.parseJwt(token);
+        return classService.joinClass(studentId, joinClassJsonRequest);
     }
 
 }

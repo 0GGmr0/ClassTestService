@@ -3,14 +3,14 @@ package com.gmr.test.service;
 
 import com.gmr.test.dao.ClassMapper;
 import com.gmr.test.dao.ClassStudentsMapper;
+import com.gmr.test.dao.UserMapper;
 import com.gmr.test.model.OV.ClassStudentsInfo;
 import com.gmr.test.model.OV.Result;
 import com.gmr.test.model.OV.TeacherClass;
+import com.gmr.test.model.entity.*;
 import com.gmr.test.model.entity.Class;
-import com.gmr.test.model.entity.ClassExample;
-import com.gmr.test.model.entity.ClassStudents;
-import com.gmr.test.model.entity.ClassStudentsExample;
 import com.gmr.test.model.jsonrequestbody.CreateClassJsonRequest;
+import com.gmr.test.model.jsonrequestbody.JoinClassJsonRequest;
 import com.gmr.test.tools.ResultTool;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +26,10 @@ import java.util.List;
  */
 @Service
 public class ClassService {
+
+    @Resource
+    private UserMapper userMapper;
+
     @Resource
     private ClassMapper classMapper;
 
@@ -122,5 +126,32 @@ public class ClassService {
         return ResultTool.success(teacherClassList);
     }
 
+
+    /**
+     * @Description: 学生加入一个班级
+     * @Param: [studentsId, joinClassJsonRequest]
+     * @Return: com.gmr.test.model.OV.Result
+     * @Author: ggmr
+     * @Date: 18-6-26
+     */
+    public Result joinClass(String studentsId, JoinClassJsonRequest joinClassJsonRequest) {
+        String className = joinClassJsonRequest.getClassname();
+        ClassExample classExample = new ClassExample();
+        classExample.createCriteria()
+                .andClassNameEqualTo(className);
+
+        List<Class> existClass = classMapper.selectByExample(classExample);
+        if (existClass.isEmpty()) {
+            return ResultTool.error("不存在这个班级");
+        }
+
+        User student = userMapper.selectByPrimaryKey(studentsId);
+        ClassStudents classStudents = new ClassStudents();
+        classStudents.setClassId(existClass.get(0).getClassId());
+        classStudents.setStudentId(studentsId);
+        classStudents.setStudentName(student.getUserName());
+        classStudentsMapper.insert(classStudents);
+        return ResultTool.success();
+    }
 
 }
