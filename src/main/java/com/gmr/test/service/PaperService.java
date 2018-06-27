@@ -230,7 +230,7 @@ public class PaperService {
      * @Date: 18-6-26
      */
     private Date stringToDate(String strDate) throws ParseException {
-        DateFormat fmt =new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        DateFormat fmt =new SimpleDateFormat("yyyy-MM-dd");
         return fmt.parse(strDate);
     }
 
@@ -373,7 +373,7 @@ public class PaperService {
      * @Date: 18-6-26
      */
     private String changeTimeFormat(Date date) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(date);
     }
 
