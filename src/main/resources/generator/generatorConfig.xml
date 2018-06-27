@@ -48,12 +48,12 @@
                <!--enableSelectByExample="true"-->
                <!--selectByExampleQueryId="true"/>-->
 
-        <!--<table tableName="tbl_Notice" domainObjectName="Notice"-->
-               <!--enableCountByExample="true"-->
-               <!--enableUpdateByExample="true"-->
-               <!--enableDeleteByExample="true"-->
-               <!--enableSelectByExample="true"-->
-               <!--selectByExampleQueryId="true"/>-->
+        <table tableName="tbl_Notice" domainObjectName="Notice"
+               enableCountByExample="true"
+               enableUpdateByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               selectByExampleQueryId="true"/>
 
         <!--<table tableName="tbl_Paper" domainObjectName="Paper"-->
                <!--enableCountByExample="true"-->
@@ -74,12 +74,12 @@
                <!--enableDeleteByExample="true"-->
                <!--enableSelectByExample="true"-->
                <!--selectByExampleQueryId="true"/>-->
-        <table tableName="tbl_StudentsAnswer" domainObjectName="StudentsAnswer"
-               enableCountByExample="true"
-               enableUpdateByExample="true"
-               enableDeleteByExample="true"
-               enableSelectByExample="true"
-               selectByExampleQueryId="true"/>
+        <!--<table tableName="tbl_StudentsAnswer" domainObjectName="StudentsAnswer"-->
+               <!--enableCountByExample="true"-->
+               <!--enableUpdateByExample="true"-->
+               <!--enableDeleteByExample="true"-->
+               <!--enableSelectByExample="true"-->
+               <!--selectByExampleQueryId="true"/>-->
         <!--<table tableName="tbl_StudentsPaper" domainObjectName="StudentsPaper"-->
                <!--enableCountByExample="true"-->
                <!--enableUpdateByExample="true"-->

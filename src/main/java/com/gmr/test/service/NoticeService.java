@@ -32,6 +32,8 @@ public class NoticeService {
     @Resource
     private ClassMapper classMapper;
 
+    private final String defaultNoticeImageUrl = "http://oukrdttii.bkt.clouddn.com/18-6-28/84682059.jpg";
+
     /**
      * @Description: 增加一个公告
      * @Param: [teacherId, addNoticeJsonRequest]
@@ -70,8 +72,10 @@ public class NoticeService {
         }
         newNotice.setOverview(overview);
 
-        if(image.isEmpty() == false) {
+        if(image.length() != 0) {
             newNotice.setImage(image);
+        } else {
+            newNotice.setImage(defaultNoticeImageUrl);
         }
         noticeMapper.insert(newNotice);
         return ResultTool.success();

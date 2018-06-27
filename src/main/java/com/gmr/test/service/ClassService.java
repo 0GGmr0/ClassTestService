@@ -36,6 +36,10 @@ public class ClassService {
 
     @Resource
     private ClassStudentsMapper classStudentsMapper;
+
+    private final String defaultClassIcon = "http://oukrdttii.bkt.clouddn.com/18-6-24/60283894.jpg";
+
+
     /**
      * @Description: 老师创建一个班级
      * @Param: [teacherId, createClassJsonRequest]
@@ -52,8 +56,13 @@ public class ClassService {
                 .andClassNameEqualTo(className);
         if(classMapper.selectByExample(classExample).isEmpty()) {
             Class newClass = new Class();
-            newClass.setClassIcon(classIcon);
+            if(classIcon.length() != 0) {
+                newClass.setClassIcon(classIcon);
+            } else {
+                newClass.setClassIcon(defaultClassIcon);
+            }
             newClass.setClassName(className);
+            newClass.setStudentNum(0);
             newClass.setTeacherId(teacherId);
             if(classMapper.insert(newClass) == 1) {
                 return ResultTool.success();
