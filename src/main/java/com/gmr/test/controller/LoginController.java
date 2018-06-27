@@ -28,8 +28,13 @@ public class LoginController {
      * @Author: ggmr
      * @Date: 18-6-25
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public Result login(@RequestBody LoginUser loginUser) {
-        return userService.login(loginUser);
+//    @RequestMapping(value = "", method = RequestMethod.POST)
+//    public Result login(@RequestBody LoginUser loginUser) {
+//        return userService.login(loginUser);
+//    }
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public Result login(@RequestParam("uid") String uid,
+                        @RequestParam("password") String password) {
+        return userService.login(uid, password);
     }
 }

@@ -41,29 +41,94 @@ public class UserService {
      * @Author: ggmr
      * @Date: 18-6-25
      */
-    public Result login(LoginUser user) {
-        if (user == null || user.getUid() == null || "".equals(user.getUid()) || user.getPassword() == null || "".equals(user.getPassword())) {
+//    public Result login(LoginUser user) {
+//        if (user == null || user.getUid() == null || "".equals(user.getUid()) || user.getPassword() == null || "".equals(user.getPassword())) {
+//            return ResultTool.error("账号或密码不能为空");
+//        }
+//        // 首先验证数据库中有没有该用户
+//        User existedUser = userMapper.selectByPrimaryKey(user.getUid());
+//        if (existedUser != null) {
+//            try {
+//                if (existedUser.getPassword().equals(SecurityTool.encodeByMd5(user.getPassword()))) {
+//                    //密码正确
+//                    TokenResponse response = new TokenResponse();
+//                    response.setToken(JwtUtil.createJwt(user.getUid()));
+//                    response.setIdentity(existedUser.getIdentity());
+//                    return ResultTool.success(response);
+//                } else if (!existedUser.getPassword().equals(SecurityTool.encodeByMd5(user.getPassword()))) {
+//                    // 如果用户在上海大学端更改了密码，我们访问接口进行验证，通过则更新数据库中用户的密码
+//                    if (AuthTool.getAuth(user.getUid(), user.getPassword())) {
+//                        User record = new User();
+//                        record.setUserId(user.getUid());
+//                        record.setPassword(SecurityTool.encodeByMd5(user.getPassword()));
+//                        userMapper.updateByPrimaryKeySelective(record);
+//                        TokenResponse response = new TokenResponse();
+//                        response.setToken(JwtUtil.createJwt(user.getUid()));
+//                        response.setIdentity(existedUser.getIdentity());
+//                        return ResultTool.success(response);
+//
+//                    } else {
+//                        return ResultTool.error("账号密码错误");
+//                    }
+//                } else {
+//                    return ResultTool.error("您没有权限登录该系统");
+//                }
+//            } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+//                return ResultTool.error(e.getMessage());
+//            }
+//        } else {
+//            // 请求上海大学登陆接口查看有没有该用户，有的话该用户进入我们的数据库，没有的话返回登陆失败的信息
+//            if (AuthTool.getAuth(user.getUid(), user.getPassword())) {
+//                User systemUser = AuthTool.getInfo(user.getUid());
+//                assert systemUser != null;
+//                systemUser.setUserId(user.getUid());
+//                try {
+//                    systemUser.setPassword(SecurityTool.encodeByMd5(user.getPassword()));
+//                } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+//                    return ResultTool.error(e.getMessage());
+//                }
+//                Matcher matcher = pattern.matcher(user.getUid());
+//                TokenResponse response = new TokenResponse();
+//                if(matcher.find()) {
+//                    systemUser.setIdentity(1);
+//                    response.setIdentity(1);
+//                } else {
+//                    systemUser.setIdentity(2);
+//                    response.setIdentity(2);
+//                }
+//                userMapper.insertSelective(systemUser);
+//                response.setToken(JwtUtil.createJwt(user.getUid()));
+//
+//                return ResultTool.success(response);
+//            } else {
+//                return ResultTool.error("您不是上海大学的用户");
+//            }
+//        }
+//    }
+
+    public Result login(String uid, String password) {
+        if (uid == null || password == null || "".equals(uid) || "".equals(password)) {
             return ResultTool.error("账号或密码不能为空");
         }
         // 首先验证数据库中有没有该用户
-        User existedUser = userMapper.selectByPrimaryKey(user.getUid());
+        User existedUser = userMapper.selectByPrimaryKey(uid);
         if (existedUser != null) {
             try {
-                if (existedUser.getPassword().equals(SecurityTool.encodeByMd5(user.getPassword()))) {
+                if (existedUser.getPassword().equals(SecurityTool.encodeByMd5(password))) {
                     //密码正确
                     TokenResponse response = new TokenResponse();
-                    response.setToken(JwtUtil.createJwt(user.getUid()));
+                    response.setToken(JwtUtil.createJwt(uid));
                     response.setIdentity(existedUser.getIdentity());
                     return ResultTool.success(response);
-                } else if (!existedUser.getPassword().equals(SecurityTool.encodeByMd5(user.getPassword()))) {
+                } else if (!existedUser.getPassword().equals(SecurityTool.encodeByMd5(password))) {
                     // 如果用户在上海大学端更改了密码，我们访问接口进行验证，通过则更新数据库中用户的密码
-                    if (AuthTool.getAuth(user.getUid(), user.getPassword())) {
+                    if (AuthTool.getAuth(uid, password)) {
                         User record = new User();
-                        record.setUserId(user.getUid());
-                        record.setPassword(SecurityTool.encodeByMd5(user.getPassword()));
+                        record.setUserId(uid);
+                        record.setPassword(SecurityTool.encodeByMd5(password));
                         userMapper.updateByPrimaryKeySelective(record);
                         TokenResponse response = new TokenResponse();
-                        response.setToken(JwtUtil.createJwt(user.getUid()));
+                        response.setToken(JwtUtil.createJwt(uid));
                         response.setIdentity(existedUser.getIdentity());
                         return ResultTool.success(response);
 
@@ -78,16 +143,16 @@ public class UserService {
             }
         } else {
             // 请求上海大学登陆接口查看有没有该用户，有的话该用户进入我们的数据库，没有的话返回登陆失败的信息
-            if (AuthTool.getAuth(user.getUid(), user.getPassword())) {
-                User systemUser = AuthTool.getInfo(user.getUid());
+            if (AuthTool.getAuth(uid, password)) {
+                User systemUser = AuthTool.getInfo(uid);
                 assert systemUser != null;
-                systemUser.setUserId(user.getUid());
+                systemUser.setUserId(uid);
                 try {
-                    systemUser.setPassword(SecurityTool.encodeByMd5(user.getPassword()));
+                    systemUser.setPassword(SecurityTool.encodeByMd5(password));
                 } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
                     return ResultTool.error(e.getMessage());
                 }
-                Matcher matcher = pattern.matcher(user.getUid());
+                Matcher matcher = pattern.matcher(uid);
                 TokenResponse response = new TokenResponse();
                 if(matcher.find()) {
                     systemUser.setIdentity(1);
@@ -97,7 +162,7 @@ public class UserService {
                     response.setIdentity(2);
                 }
                 userMapper.insertSelective(systemUser);
-                response.setToken(JwtUtil.createJwt(user.getUid()));
+                response.setToken(JwtUtil.createJwt(uid));
 
                 return ResultTool.success(response);
             } else {
