@@ -8,20 +8,16 @@ import java.util.List;
 
 /**
  * @program: test
- * @description: 查看一个同学试卷做的具体情况
+ * @description: 与problemJsonRequest同原理
  * @author: ggmr
- * @create: 2018-06-27 00:36
+ * @create: 2018-06-27 21:42
  */
 @Data
-public class FindSomeStudentsPaperInfo {
+public class ProblemJsonResult {
     @JsonProperty("Problem")
     private String problem;
     @JsonProperty("Items")
     private List<ItemJsonRequest> items;
-    @JsonProperty("Studentanswer")
-    private String studentAnswer;
-    @JsonProperty("Rightanswer")
-    private String rightAnswer;
-    @JsonProperty("Iscorrect")
-    private Integer isCorrect;
+    @JsonProperty("Answer")
+    private String answer;
 }

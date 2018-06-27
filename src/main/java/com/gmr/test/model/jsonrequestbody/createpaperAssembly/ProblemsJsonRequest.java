@@ -15,8 +15,14 @@ import java.util.List;
 public class ProblemsJsonRequest {
     @JsonProperty("Problem")
     private String problem;
-    @JsonProperty("Items")
-    private List<ItemJsonRequest> items;
+    @JsonProperty("A")
+    private String A;
+    @JsonProperty("B")
+    private String B;
+    @JsonProperty("C")
+    private String C;
+    @JsonProperty("D")
+    private String D;
     @JsonProperty("Answer")
     private String answer;
 }

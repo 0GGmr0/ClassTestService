@@ -1,5 +1,6 @@
 package com.gmr.test.model.jsonrequestbody.createpaperAssembly;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**

@@ -146,18 +146,13 @@ public class PaperService {
                     }
                     PaperProblems paperProblems = new PaperProblems();
                     paperProblems.setProblemContent(problemsJsonRequest.getProblem());
-                    List<ItemJsonRequest> options = problemsJsonRequest.getItems();
-                    switch (options.size()) {
-                        case 4:
-                            paperProblems.setQuestionD(options.get(3).getValue());
-                        case 3:
-                            paperProblems.setQuestionC(options.get(2).getValue());
-                        case 2:
-                            paperProblems.setQuestionB(options.get(1).getValue());
-                        case 1:
-                            paperProblems.setQuestionA(options.get(0).getValue());
-                    }
-                    paperProblems.setChoiceNum(options.size());
+
+                    paperProblems.setQuestionD(problemsJsonRequest.getD());
+                    paperProblems.setQuestionC(problemsJsonRequest.getC());
+                    paperProblems.setQuestionB(problemsJsonRequest.getB());
+                    paperProblems.setQuestionA(problemsJsonRequest.getA());
+
+                    paperProblems.setChoiceNum(4);
                     paperProblems.setProblemType(1);
                     paperProblems.setRightAnswer(problemsJsonRequest.getAnswer());
                     paperProblems.setPaperId(paperId);
@@ -172,20 +167,16 @@ public class PaperService {
                         count++;
                         continue;
                     }
+
                     PaperProblems paperProblems = new PaperProblems();
                     paperProblems.setProblemContent(problemsJsonRequest.getProblem());
-                    List<ItemJsonRequest> options = problemsJsonRequest.getItems();
-                    switch (options.size()) {
-                        case 4:
-                            paperProblems.setQuestionD(options.get(3).getValue());
-                        case 3:
-                            paperProblems.setQuestionC(options.get(2).getValue());
-                        case 2:
-                            paperProblems.setQuestionB(options.get(1).getValue());
-                        case 1:
-                            paperProblems.setQuestionA(options.get(0).getValue());
-                    }
-                    paperProblems.setChoiceNum(options.size());
+
+                    paperProblems.setQuestionD(problemsJsonRequest.getD());
+                    paperProblems.setQuestionC(problemsJsonRequest.getC());
+                    paperProblems.setQuestionB(problemsJsonRequest.getB());
+                    paperProblems.setQuestionA(problemsJsonRequest.getA());
+
+                    paperProblems.setChoiceNum(4);
                     paperProblems.setProblemType(2);
                     paperProblems.setRightAnswer(problemsJsonRequest.getAnswer());
                     paperProblems.setPaperId(paperId);
@@ -295,15 +286,15 @@ public class PaperService {
                 .andPaperIdEqualTo(paper.getPaperId())
                 .andProblemTypeEqualTo(problemType);
         List<PaperProblems> paperProblemsList = paperProblemsMapper
-                                    .selectByExample(paperProblemsExample);
+                .selectByExample(paperProblemsExample);
         if(paperProblemsList.isEmpty()) {
             return ResultTool.error("您没有出这类型的题目");
         }
-        List<ProblemsJsonRequest> problemsJsonRequestList = new LinkedList<>();
+        List<ProblemJsonResult> problemsJsonRequestList = new LinkedList<>();
         for(PaperProblems paperProblem : paperProblemsList) {
-            ProblemsJsonRequest problemsJsonRequest = new ProblemsJsonRequest();
-            problemsJsonRequest.setProblem(paperProblem.getProblemContent());
-            problemsJsonRequest.setAnswer(paperProblem.getRightAnswer());
+            ProblemJsonResult problemJsonResult = new ProblemJsonResult();
+            problemJsonResult.setProblem(paperProblem.getProblemContent());
+            problemJsonResult.setAnswer(paperProblem.getRightAnswer());
 
             //如果是选择题，那么会有这个items选项
             if(problemType == 1 || problemType == 2) {
@@ -335,9 +326,9 @@ public class PaperService {
                     }
                 }
                 Collections.reverse(itemJsonRequestList);
-                problemsJsonRequest.setItems(itemJsonRequestList);
+                problemJsonResult.setItems(itemJsonRequestList);
             }
-            problemsJsonRequestList.add(problemsJsonRequest);
+            problemsJsonRequestList.add(problemJsonResult);
         }
         return ResultTool.success(problemsJsonRequestList);
 
