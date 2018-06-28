@@ -510,25 +510,52 @@ public class PaperService {
                             , Integer problemType) {
         int correctNum = 0;
         for(AnswerInfo answerInfo : answerInfoList) {
-            StudentsAnswer studentsAnswer = new StudentsAnswer();
             PaperProblems paperProblems = paperProblemsMapper.selectByPrimaryKey(answerInfo.getProblemId());
-            studentsAnswer.setPaperId(paperId);
-            studentsAnswer.setProblemId(answerInfo.getProblemId());
-            studentsAnswer.setProblemType(problemType);
-            studentsAnswer.setStudentId(studentId);
-            if(answerInfo.getAnswer() == null) {
-                studentsAnswer.setIsRight(2);
-                studentsAnswer.setStudentsAnswer("");
-            } else {
-                if(answerInfo.getAnswer().equals(paperProblems.getRightAnswer())) {
-                    correctNum++;
-                    studentsAnswer.setIsRight(1);
-                } else {
+            StudentsAnswerExample studentsAnswerExample = new StudentsAnswerExample();
+            studentsAnswerExample.createCriteria()
+                    .andProblemIdEqualTo(answerInfo.getProblemId())
+                    .andPaperIdEqualTo(paperId)
+                    .andStudentIdEqualTo(studentId);
+            List<StudentsAnswer> studentsAnswerList = studentsAnswerMapper.selectByExample(studentsAnswerExample);
+            if(studentsAnswerList.isEmpty()) {
+                StudentsAnswer studentsAnswer = new StudentsAnswer();
+                studentsAnswer.setPaperId(paperId);
+                studentsAnswer.setProblemId(answerInfo.getProblemId());
+                studentsAnswer.setProblemType(problemType);
+                studentsAnswer.setStudentId(studentId);
+                if(answerInfo.getAnswer() == null) {
                     studentsAnswer.setIsRight(2);
+                    studentsAnswer.setStudentsAnswer("");
+                } else {
+                    if(answerInfo.getAnswer().equals(paperProblems.getRightAnswer())) {
+                        correctNum++;
+                        studentsAnswer.setIsRight(1);
+                    } else {
+                        studentsAnswer.setIsRight(2);
+                    }
+                    studentsAnswer.setStudentsAnswer(answerInfo.getAnswer());
                 }
-                studentsAnswer.setStudentsAnswer(answerInfo.getAnswer());
+                studentsAnswerMapper.insert(studentsAnswer);
+            } else {
+                StudentsAnswer studentsAnswer1 = new StudentsAnswer();
+                studentsAnswer1.setId(studentsAnswerList.get(0).getId());
+                if(answerInfo.getAnswer() == null) {
+                    studentsAnswer1.setIsRight(2);
+                    studentsAnswer1.setStudentsAnswer("");
+                } else {
+                    if(answerInfo.getAnswer().equals(paperProblems.getRightAnswer())) {
+                        if(studentsAnswerList.get(0).getIsRight() == 2) {
+                            correctNum++;
+                        }
+                        studentsAnswer1.setIsRight(1);
+                    } else if(studentsAnswerList.get(0).getIsRight() == 1){
+                        studentsAnswer1.setIsRight(2);
+                        correctNum--;
+                    }
+                    studentsAnswer1.setStudentsAnswer(answerInfo.getAnswer());
+                }
+                studentsAnswerMapper.updateByPrimaryKeySelective(studentsAnswer1);
             }
-            studentsAnswerMapper.insert(studentsAnswer);
         }
         return correctNum;
     }
