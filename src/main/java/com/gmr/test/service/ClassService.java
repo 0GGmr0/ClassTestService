@@ -185,6 +185,7 @@ public class ClassService {
             StudentAllClassInfo studentAllClassInfo = new StudentAllClassInfo();
             studentAllClassInfo.setClassIcon(class1.getClassIcon());
             studentAllClassInfo.setClassName(class1.getClassName());
+            studentAllClassInfo.setStudentNumber(class1.getStudentNum());
             User teacher = userMapper.selectByPrimaryKey(class1.getTeacherId());
             studentAllClassInfo.setTeacherName(teacher.getUserName());
 
