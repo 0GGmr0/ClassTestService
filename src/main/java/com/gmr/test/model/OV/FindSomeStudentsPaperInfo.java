@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Data
 public class FindSomeStudentsPaperInfo {
-    @JsonProperty("Problem")
+    @JsonProperty("Problemname")
     private String problem;
     @JsonProperty("Items")
     private List<ItemJsonRequest> items;
